@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#080a11">
+<title>Sel.Phys/Sel.Meta</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="description" content="Daily and weekly tracker for Sel.Phys and Sel.Meta practices.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&amp;family=Manrope:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#080a11;--card2:#1a1f31;--line:#262c42;--tx:#e8eaf3;--mu:#8b92ad;
+--c0:#3dd6c6;--c1:#9b8cff;--c2:#ffb454;--c3:#ff6f91;--c4:#6fb7ff;--c5:#8fe388;--c6:#ff9b6b;--cx:#f5d26b;
+--serif:'Cormorant Garamond','Iowan Old Style',Palatino,Georgia,serif;--sans:'Manrope',Inter,system-ui,-apple-system,sans-serif;--nav:66px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:#080a11}
+body{color:var(--tx);font-family:var(--sans);font-size:14px;line-height:1.45;letter-spacing:.01em;-webkit-font-smoothing:antialiased;min-height:100vh;overscroll-behavior-y:none;
+background:radial-gradient(700px 420px at 90% -5%,#241d4a55 0,transparent 60%),radial-gradient(600px 420px at 0% 105%,#0f3a4455 0,transparent 60%),#080a11;background-attachment:fixed}
+button{font:inherit;font-family:var(--sans);cursor:pointer}
+.top{position:sticky;top:0;z-index:4;padding:calc(env(safe-area-inset-top,0px) + 10px) 14px 8px;background:linear-gradient(#080a11 72%,#080a11d9 88%,transparent);backdrop-filter:blur(10px)}
+.tin{max-width:600px;margin:0 auto}
+.r1{display:flex;align-items:center;gap:10px}
+.brand{font:500 25px/1 var(--serif);background:linear-gradient(90deg,#f6efe0,#f5d26b 70%);-webkit-background-clip:text;background-clip:text;color:transparent;flex:1}
+.sync{width:9px;height:9px;border-radius:50%;background:var(--mu)}.sync.ok{background:var(--c5);box-shadow:0 0 8px var(--c5)}.sync.warn{background:var(--c2)}
+.dnav{display:flex;align-items:center;gap:8px;margin-top:8px}
+.dt{flex:1;text-align:center;font:500 21px/1.1 var(--serif)}
+.dt small{display:block;font:300 11px var(--sans);letter-spacing:.12em;color:var(--mu);text-transform:uppercase;margin-top:2px}
+.ib{width:42px;height:42px;border-radius:13px;border:1px solid #ffffff14;background:#ffffff06;color:var(--tx);display:inline-flex;align-items:center;justify-content:center;font-size:22px;flex:none}
+.ib:disabled{opacity:.25}
+.tdy{font-size:11px;letter-spacing:.08em;padding:0 10px;width:auto}
+main{max-width:600px;margin:0 auto;padding:4px 14px calc(var(--nav) + env(safe-area-inset-bottom,0px) + 28px);touch-action:pan-y}
+.view{animation:vin .22s ease-out}@keyframes vin{from{opacity:0;transform:translateY(6px)}}
+.sL{animation:sL .22s ease-out}@keyframes sL{from{opacity:.2;transform:translateX(28px)}}
+.sR{animation:sR .22s ease-out}@keyframes sR{from{opacity:.2;transform:translateX(-28px)}}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:#0d1020f0;backdrop-filter:blur(16px);border-top:1px solid #ffffff10;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
+.tabsin{max-width:600px;margin:0 auto;display:flex}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 0;color:var(--mu);font-size:11px;letter-spacing:.03em;background:none;border:0}
+.tab .pb{padding:4px 18px;border-radius:16px;display:flex;transition:background .2s}
+.tab svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tab.on{color:var(--cx)}.tab.on .pb{background:#f5d26b1f}
+.card{--c:var(--c0);background:linear-gradient(155deg,#1b2036cc,#111522cc);border:1px solid #ffffff12;border-top:1px solid color-mix(in srgb,var(--c) 70%,transparent);border-radius:22px;padding:16px 14px;margin:12px 0;box-shadow:0 18px 40px -26px #000,inset 0 1px 0 #ffffff0a}
+.hero{display:flex;align-items:center;gap:18px}
+.big{font:500 34px/1.05 var(--serif)}
+.tag{font:600 10px var(--sans);letter-spacing:.24em;color:var(--c);text-transform:uppercase}
+.hint{color:var(--mu);font-size:12.5px;font-weight:300;letter-spacing:.03em}
+.ch{display:flex;align-items:center;gap:10px;cursor:pointer;padding:0 2px}
+.nm{font:500 22px/1.15 var(--serif);margin-top:2px}
+.ch .p{color:var(--c);font:500 22px var(--serif)}
+.chev{color:var(--mu);font-size:18px;transition:transform .2s;transform:rotate(-90deg);width:22px;text-align:center}.chev.open{transform:none}
+.bar{height:3px;background:#0d1020;border-radius:5px;overflow:hidden;margin:10px 2px 8px}
+.bar i{display:block;height:100%;border-radius:5px;transition:width .4s;box-shadow:0 0 10px var(--c);background:linear-gradient(90deg,color-mix(in srgb,var(--c) 55%,transparent),var(--c))}
+.row{display:flex;align-items:center;gap:12px;min-height:58px;padding:8px 4px 8px 12px;margin:6px 0;border-radius:16px;background:#0b0e1a99;border:1px solid #ffffff0d;position:relative;overflow:hidden;cursor:pointer;user-select:none;transition:transform .12s,border-color .15s;width:100%;color:var(--tx);text-align:left}
+.row:active{transform:scale(.985);border-color:color-mix(in srgb,var(--c) 60%,transparent)}
+.ck{width:26px;height:26px;border-radius:50%;border:2px solid var(--c);flex:none;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.row.d .ck{background:var(--c);box-shadow:0 0 12px -2px var(--c)}
+.row.d .ck::after{content:'';width:6px;height:11px;border:solid #0b0d14;border-width:0 2.5px 2.5px 0;transform:translateY(-1px) rotate(45deg)}
+.row.pop .ck{animation:pop .32s ease-out}@keyframes pop{40%{transform:scale(1.3)}}
+.row.d .lb{opacity:.6}
+.lbw{flex:1;min-width:0}
+.lb{font-size:15px;line-height:1.3}
+.meta{display:flex;gap:10px;align-items:center;margin-top:4px;font-size:11.5px;color:var(--mu);font-variant-numeric:tabular-nums}
+.mini{display:flex;gap:3px}
+.mini i{width:6px;height:6px;border-radius:50%;background:#ffffff16;display:block}
+.mini i.on{background:var(--c)}
+.mini i.now{outline:1px solid #ffffff60;outline-offset:1px}
+.mo{width:42px;height:42px;border-radius:12px;color:var(--mu);display:flex;align-items:center;justify-content:center;font-size:20px;flex:none;background:none;border:0}
+.f{position:absolute;left:0;bottom:0;height:2px;background:var(--c)}
+.add{justify-content:center;border-style:dashed;color:var(--mu);min-height:46px;font-weight:300;letter-spacing:.06em}
+.addg{display:flex;width:100%;align-items:center;justify-content:center;min-height:56px;margin:12px 0;border:1px dashed #ffffff1c;border-radius:22px;color:var(--mu);background:none;letter-spacing:.08em;font-weight:300}
+.stp{display:flex;align-items:center;gap:6px;flex:none}
+.sb{width:42px;height:42px;border-radius:12px;border:1px solid #ffffff1c;background:#ffffff08;color:var(--tx);font-size:21px;display:flex;align-items:center;justify-content:center}
+.sb:active{background:color-mix(in srgb,var(--c) 30%,transparent)}
+.sn{min-width:20px;text-align:center;color:var(--c);font-weight:600}
+.wstrip{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.wd{border-radius:14px;padding:7px 0 6px;text-align:center;background:#0b0e1a99;border:1px solid #ffffff0d;color:var(--tx)}
+.wd.sel{border-color:var(--cx);background:#f5d26b14}
+.wd:disabled{opacity:.3}
+.wd small{display:block;font-size:10px;letter-spacing:.1em;color:var(--mu)}
+.wd svg{width:30px;height:30px;display:block;margin:4px auto 0}
+.mc{padding:12px 4px;border-bottom:1px solid #ffffff08}.mc:last-of-type{border-bottom:0}
+.mh{display:flex;align-items:baseline;gap:8px;margin-bottom:10px}
+.mh b{font-weight:500;font-size:15px}.mh span{color:var(--mu);font-size:11.5px;margin-left:auto;font-variant-numeric:tabular-nums}
+.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.scale button{height:46px;border-radius:13px;border:1px solid #ffffff1a;background:#ffffff06;color:var(--mu);font-size:16px;font-weight:500}
+.scale button.on{background:var(--c);color:#0b0d14;border-color:var(--c);box-shadow:0 0 14px -3px var(--c)}
+.numin{display:flex;align-items:center;gap:8px}
+.numin input{flex:1;text-align:center;font-size:18px}
+input[type=number],input[type=text],textarea,select{background:#0d1020;color:var(--tx);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font:inherit;font-family:var(--sans);font-size:16px;width:100%}
+select{width:auto}
+textarea{min-height:110px;resize:vertical}
+.seg{display:flex;background:#0b0e1a;border-radius:13px;padding:3px;border:1px solid #ffffff10;gap:2px}
+.seg button{flex:1;background:none;border:0;color:var(--mu);padding:9px 6px;border-radius:10px;font-size:12.5px;white-space:nowrap}
+.seg button.on{background:#ffffff14;color:var(--tx)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin:4px 0 10px;scrollbar-width:none}
+.chips button{flex:none;border:1px solid #ffffff18;background:none;color:var(--mu);border-radius:20px;padding:7px 13px;font-size:12.5px}
+.chips button.on{border-color:var(--c4);color:var(--tx);background:#6fb7ff1a}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tile{background:#0b0e1a99;border:1px solid #ffffff0d;border-radius:16px;padding:12px 10px}
+.tile b{display:block;font:500 28px/1 var(--serif)}
+.tile span{display:block;font-size:11px;color:var(--mu);margin-top:6px;line-height:1.3}
+.chart{position:relative;padding-top:40px;margin:4px 0 2px;touch-action:pan-y}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.tip{position:absolute;top:0;transform:translateX(-50%);pointer-events:none;background:#0d1020;border:1px solid #ffffff22;border-radius:10px;padding:5px 9px;font-size:12px;white-space:nowrap;display:none;font-variant-numeric:tabular-nums;line-height:1.35}
+.heatw{overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.heat{display:flex;gap:3px}
+.hcol{display:flex;flex-direction:column;gap:3px}
+.hc{border-radius:4px;background:#141a2c;cursor:pointer;border:1px solid transparent;padding:0}
+.hc.na{background:transparent;cursor:default}
+.hc.sel{border-color:#fff}
+.pr{display:grid;grid-template-columns:1fr 50px 74px;gap:8px;align-items:center;padding:10px 4px;border-bottom:1px solid #ffffff08;cursor:pointer}
+.pr.h{cursor:default;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--mu);padding-top:2px}
+.pr .num{text-align:right;font-variant-numeric:tabular-nums;font-size:13px}
+.pr .mu{color:var(--mu)}
+.rb{height:3px;background:#ffffff0c;border-radius:3px;margin-top:6px;overflow:hidden}.rb i{display:block;height:100%;border-radius:3px}
+.cmp{padding:10px 4px;border-bottom:1px solid #ffffff08}
+.cmp .t1{display:flex;gap:8px;font-size:13.5px}.cmp .t1 span{margin-left:auto;color:var(--mu);font-variant-numeric:tabular-nums;white-space:nowrap}
+.dv{position:relative;height:8px;margin-top:7px;background:#ffffff08;border-radius:4px}
+.dv::before{content:'';position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:#8b92ad80}
+.dv i{position:absolute;top:0;bottom:0;border-radius:4px}
+.empty{text-align:center;padding:26px 10px;color:var(--mu);font-weight:300}
+.set{display:flex;align-items:center;gap:12px;min-height:54px;width:100%;padding:8px 12px;margin:6px 0;border-radius:14px;background:#0b0e1a99;border:1px solid #ffffff0d;color:var(--tx);text-align:left}
+.set span{flex:1}.set em{font-style:normal;color:var(--mu)}
+#bd{position:fixed;inset:0;background:#05060bb8;opacity:0;pointer-events:none;transition:opacity .22s;z-index:8}
+#bd.on{opacity:1;pointer-events:auto}
+#sh{--c:var(--c0);position:fixed;left:0;right:0;bottom:0;z-index:9;max-height:90vh;overflow:auto;background:linear-gradient(160deg,#1a1f36,#10131f);border-top:1px solid var(--c);border-radius:26px 26px 0 0;padding:10px 20px calc(26px + env(safe-area-inset-bottom,0px));transform:translateY(105%);transition:transform .28s cubic-bezier(.2,.8,.2,1);max-width:600px;margin:0 auto;box-shadow:0 -20px 60px -20px var(--c)}
+#sh.on{transform:none}
+.grab{width:42px;height:4px;border-radius:2px;background:#ffffff30;margin:0 auto 12px}
+#sh h3{margin:4px 0 12px;font:500 28px/1.1 var(--serif)}
+#sh h4{font:500 10.5px var(--sans);letter-spacing:.26em;text-transform:uppercase;color:var(--mu);margin:20px 0 8px}
+.fr{display:flex;align-items:center;gap:10px;padding:8px 12px;margin:8px 0;background:var(--card2);border-radius:13px;border:1px solid var(--line);flex-wrap:wrap}
+.fr label{flex:1;min-width:110px}
+.fr input[type=number]{width:110px}
+.bb{background:var(--c);color:#0b0d14;border:0;border-radius:12px;padding:11px 16px;font-weight:600;letter-spacing:.03em}
+.bb.g{background:transparent;color:var(--tx);border:1px solid var(--line);font-weight:500}
+.bb.dg{background:transparent;color:var(--c3);border:1px solid color-mix(in srgb,var(--c3) 45%,transparent)}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.bignum{display:flex;align-items:center;justify-content:center;gap:14px;margin:8px 0}
+.bignum input{width:130px;text-align:center;font:500 30px var(--serif)}
+.bignum .sb{width:54px;height:54px;font-size:26px}
+.sw{display:flex;gap:10px;flex-wrap:wrap}.sw button{width:32px;height:32px;border-radius:50%;border:2px solid transparent}.sw button.on{border-color:#fff}
+.banner{display:flex;align-items:center;gap:10px;margin:12px 0 0;padding:10px 12px;border-radius:16px;background:#ffb4541a;border:1px solid #ffb45455;font-size:13px}
+.banner span{flex:1}.banner .bb{padding:8px 12px;font-size:12.5px}
+#upd{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 10px);transform:translateX(-50%);z-index:10;display:none;background:#1d2338;border:1px solid var(--cx);border-radius:14px;padding:10px 14px;font-size:13px;gap:10px;align-items:center}
+#upd.on{display:flex}
+#toast{position:fixed;left:50%;bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 14px);transform:translate(-50%,20px);opacity:0;transition:.25s;background:#1d2338;border:1px solid #ffffff20;border-radius:14px;padding:10px 16px;font-size:13px;z-index:7;pointer-events:none;white-space:nowrap}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+</style></head><body>
+<header class="top"><div class="tin">
+ <div class="r1"><div class="brand">Sel.Phys/Sel.Meta</div></div>
+ <div class="dnav" id="dnav"><button class="ib" onclick="go(-1)" aria-label="Previous">‹</button><div class="dt" id="dl"></div><button class="ib tdy" id="tb" onclick="goToday()">Today</button><button class="ib" id="nx" onclick="go(1)" aria-label="Next">›</button></div>
+</div></header>
+<main id="main"></main>
+<nav class="tabs"><div class="tabsin" id="tabs"></div></nav>
+<div id="toast"></div><div id="upd"><span>A new version is ready</span><button class="bb" style="--c:var(--cx);padding:7px 12px" onclick="applyUpdate()">Update</button></div><input type="file" id="fileIn" accept="application/json,.json,text/plain" style="display:none" onchange="readBackup(this)">
+<div id="bd" onclick="closeM()"></div><div id="sh"></div>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clone=o=>JSON.parse(JSON.stringify(o));
+let _n=0;const nid=()=>'x'+Date.now().toString(36)+(_n++).toString(36);
+const fmN=n=>Number(n||0).toLocaleString('en-GB',{maximumFractionDigits:2});
+const pc=n=>Math.round(n*100)+'%';
+const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
+const COLORS=['--c0','--c1','--c2','--c3','--c4','--c5','--c6','--cx'];
+const C=(id,label,o={})=>Object.assign({id,label,type:'check',note:''},o);
+const N=(id,label,target,unit,o={})=>C(id,label,Object.assign({type:'num',target,unit},o));
+const S=(id,label,target,o={})=>C(id,label,Object.assign({type:'count',target},o));
+const PHYS=()=>({id:'g_phys',kind:'daily',color:'--cx',name:'Sel.Phys',sub:'Exercise, heat, cold & yoga',items:[
+  C('exer','Exercise'),C('sauna','Sauna'),C('cold','Cold exposure',{note:'Keep it a few hours away from strength sessions; cold straight after lifting can blunt muscle gains.'}),C('yoga','Yoga')]});
+const META=(med)=>({id:'g_meta',kind:'daily',color:'--c1',name:'Sel.Meta',sub:'Meditation & prayer',items:[
+  med||N('med','Meditation',10,'min'),C('prayer','Prayer')]});
+const DEF={v:2,groups:[
+ PHYS(),META(),
+ {id:'g_found',kind:'daily',color:'--c0',name:'Foundations',sub:'Sleep, light & the basics',items:[
+  C('sleep','7–9 h sleep, consistent times'),C('light','Outdoor light within an hour of waking'),C('caf','No caffeine after 2 pm'),C('alc','Alcohol-free'),
+  N('steps','Steps',8000,'steps'),N('water','Water',2,'L')]},
+ {id:'g_body',kind:'daily',color:'--c4',name:'Body & carriage',sub:'Release, mobility, posture',items:[
+  C('mob','Mobility routine (hips, upper back, shoulders)'),C('semi','Alexander semi-supine, 10 min'),N('scan','Tension scans: jaw, brow, shoulders, breath',3,'×')]},
+ {id:'g_voice',kind:'daily',color:'--c2',name:'Voice',sub:'Breath, resonance, expression',items:[
+  C('breath','Low diaphragmatic breathing practice'),C('sovt','Humming / lip trills / straw phonation, 5 min'),C('read','Read aloud, 5–10 min')]},
+ {id:'g_face',kind:'daily',color:'--c3',name:'Face, eyes & skin',sub:'Daily care',items:[
+  C('spf','Sunscreen SPF 30+'),C('ret','Retinoid (evening)'),C('floss','Floss'),C('eyes','20-20-20 screen breaks')]},
+ {id:'g_mind',kind:'daily',color:'--c4',name:'Mind & presence',sub:'Attention & nervous system',items:[
+  C('hrv','Resonance breathing, ~6/min, 5 min'),C('jour','Journal / reflection')]},
+ {id:'g_diet',kind:'daily',color:'--c5',name:'Diet',sub:'Mediterranean pattern',items:[
+  C('prot','Protein at every meal'),N('veg','Veg & fruit portions',5,''),C('upf','Minimal ultra-processed food'),C('ferm','Fermented food')]},
+ {id:'g_supp',kind:'daily',color:'--c6',name:'Supplements',sub:'Adjust once bloods are back',items:[
+  C('vitd','Vitamin D 10 µg',{note:'NHS advises this for everyone in the UK from October to March.'}),C('crea','Creatine 3–5 g'),C('omega','Omega-3 (if no oily fish today)'),C('mag','Magnesium glycinate (evening)')]},
+ {id:'w_train',kind:'weekly',color:'--c0',name:'Training',sub:'Sessions this week',items:[S('str','Strength training',3),S('z2','Zone 2 cardio',3),S('hiit','Intervals',1)]},
+ {id:'w_move',kind:'weekly',color:'--c1',name:'Movement practices',sub:'Awareness & control',items:[S('pil','Pilates',1),S('feld','Feldenkrais',1),S('tai','Tai chi / qigong',1),S('dance','Dance',1)]},
+ {id:'w_rest',kind:'weekly',color:'--c2',name:'Recovery & lessons',sub:'Teachers & coaching',items:[S('alex','Alexander Technique lesson',1),S('sing','Singing / voice lesson',1)]},
+ {id:'w_life',kind:'weekly',color:'--c3',name:'Food & mind',sub:'Weekly rhythm',items:[S('fish','Oily fish meals',3),S('learn','Piano / language / hard-skill practice',4),S('social','Quality social time',2)]},
+ {id:'o_setup',kind:'once',color:'--cx',name:'Courses & one-offs',sub:'Set up once, then maintain',items:[
+  C('blood','Blood panel: ferritin, B12, folate, thyroid, vit D, HbA1c',{done:false}),C('adj','Supplements adjusted to blood results',{done:false}),
+  C('alexb','Alexander Technique lessons (block)',{type:'count',cur:0,target:10}),C('singb','Singing lessons (term)',{type:'count',cur:0,target:10}),
+  C('dent','Dental check-up & hygienist',{done:false}),C('book','Read Linklater, Freeing the Natural Voice',{done:false}),
+  C('feldsrc','Feldenkrais ATM recordings sourced',{done:false}),C('track','Sleep / HRV tracking set up (optional)',{done:false})]}
+],
+metrics:[
+ {id:'m_sleep',label:'Sleep',type:'num',unit:'h',step:0.25},{id:'m_energy',label:'Energy',type:'scale'},{id:'m_focus',label:'Focus',type:'scale'},
+ {id:'m_mood',label:'Mood',type:'scale'},{id:'m_calm',label:'Calm',type:'scale'},{id:'m_rhr',label:'Resting HR',type:'num',unit:'bpm',step:1},{id:'m_wt',label:'Weight',type:'num',unit:'kg',step:0.1}
+]};
+
+/* ---------- state & storage ---------- */
+const LSK='pv-console-v1';
+let ST={cfg:clone(DEF),months:{}};
+function migrate(cfg){
+ let ch=false;if(!cfg.metrics){cfg.metrics=clone(DEF.metrics);ch=true}
+ if(!(cfg.v>=2)){
+  let med=null;
+  cfg.groups.forEach(g=>{g.items=g.items.filter(it=>{
+   if(it.id==='med'&&g.kind==='daily'){med=it;return false}
+   if((it.id==='sauna'||it.id==='yoga')&&g.kind==='weekly')return false;
+   return true})});
+  const at=cfg.groups.findIndex(g=>g.kind==='daily');const add=[];
+  if(!cfg.groups.some(g=>g.id==='g_phys'))add.push(PHYS());
+  if(!cfg.groups.some(g=>g.id==='g_meta'))add.push(META(med));
+  cfg.groups.splice(at<0?0:at,0,...add);cfg.v=2;ch=true}
+ return ch}
+try{const l=JSON.parse(localStorage.getItem(LSK)||'null');if(l&&l.cfg&&l.cfg.groups){ST.cfg=l.cfg;ST.months=l.months||{}}}catch(e){}
+migrate(ST.cfg);
+let ui={view:'today',collapsed:{},range:30,metric:null,cmp:null,lag:0};
+try{Object.assign(ui,JSON.parse(localStorage.getItem('pv-ui')||'{}'))}catch(e){}
+const saveUI=()=>{try{localStorage.setItem('pv-ui',JSON.stringify(ui))}catch(e){}};
+const saveLocal=()=>{try{localStorage.setItem(LSK,JSON.stringify({cfg:ST.cfg,months:ST.months,ts:Date.now()}))}catch(e){}};
+function peek(d){const m=ST.months[d.slice(0,7)];return m&&m.days?m.days[d]||null:null}
+function day(d){const k=d.slice(0,7);ST.months[k]=ST.months[k]||{days:{}};ST.months[k].days=ST.months[k].days||{};return ST.months[k].days[d]=ST.months[k].days[d]||{}}
+
+let syncTxt='Saved on this phone';
+function touch(k){saveLocal()}
+const touchCfg=()=>touch('config');
+let persisted=false;
+async function askPersist(){try{if(navigator.storage&&navigator.storage.persist){persisted=await navigator.storage.persisted();if(!persisted)persisted=await navigator.storage.persist()}}catch(e){}}
+function lastBackup(){try{return localStorage.getItem('pv-lastbackup')}catch(e){return null}}
+function backupAge(){const l=lastBackup();if(!l)return null;return Math.floor((pd(today())-pd(l))/864e5)}
+function hasData(){return !!firstDay()}
+/* ---------- dates ---------- */
+function ymd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function pd(s){const a=s.split('-').map(Number);return new Date(a[0],a[1]-1,a[2])}
+function addD(s,n){const d=pd(s);d.setDate(d.getDate()+n);return ymd(d)}
+function wkStart(s){const d=pd(s);d.setDate(d.getDate()-((d.getDay()+6)%7));return ymd(d)}
+const today=()=>ymd(new Date());
+const fd=(s,o)=>pd(s).toLocaleDateString('en-GB',o);
+const short=s=>fd(s,{day:'numeric',month:'short'});
+const long=s=>fd(s,{weekday:'short',day:'numeric',month:'short'});
+let sel=today();
+
+/* ---------- logic ---------- */
+const groups=k=>ST.cfg.groups.filter(g=>g.kind===k);
+const grp=id=>ST.cfg.groups.find(g=>g.id===id);
+const itemOf=(gid,iid)=>grp(gid).items.find(i=>i.id===iid);
+function val(d,id){const x=peek(d);return x&&x.i?x.i[id]:undefined}
+function setVal(d,id,v){const x=day(d);x.i=x.i||{};if(v===undefined||v===0||v===false||v===''||isNaN(v))delete x.i[id];else x.i[id]=v;touch('log-'+d.slice(0,7))}
+const isDone=(it,v)=>it.type==='num'?(+v||0)>=(+it.target||1):!!v;
+const dailyItems=()=>groups('daily').flatMap(g=>g.items);
+function dayPct(d,items){items=items||dailyItems();if(!items.length)return 0;return items.filter(it=>isDone(it,val(d,it.id))).length/items.length}
+function streak(it,d){let s=0,c=d;if(!isDone(it,val(c,it.id)))c=addD(c,-1);while(s<3000&&isDone(it,val(c,it.id))){s++;c=addD(c,-1)}return s}
+function weekCount(id,s){const w=wkStart(s);let n=0;for(let k=0;k<7;k++)n+=+val(addD(w,k),id)||0;return n}
+const wItemPct=(it,s)=>Math.min(weekCount(it.id,s)/(+it.target||1),1);
+function weekPct(s){const it=groups('weekly').flatMap(g=>g.items);return it.length?it.reduce((a,i)=>a+wItemPct(i,s),0)/it.length:0}
+const onceP=it=>it.type==='count'?Math.min((+it.cur||0)/(+it.target||1),1):(it.done?1:0);
+function firstDay(){let f=null;for(const k in ST.months){const ds=(ST.months[k]||{}).days||{};for(const d in ds){const x=ds[d];if(x&&((x.i&&Object.keys(x.i).length)||(x.m&&Object.keys(x.m).length)||x.n)){if(!f||d<f)f=d}}}return f}
+function daysLogged(){let n=0;for(const k in ST.months)n+=Object.keys((ST.months[k]||{}).days||{}).length;return n}
+function runDays(d){let s=0,c=d;if(dayPct(c)<.8)c=addD(c,-1);while(s<3000&&dayPct(c)>=.8){s++;c=addD(c,-1)}return s}
+function metric(d,id){const x=peek(d);return x&&x.m&&x.m[id]!==undefined&&x.m[id]!==''?+x.m[id]:null}
+function lastMetric(id){for(let k=1;k<120;k++){const v=metric(addD(sel,-k),id);if(v!=null)return v}return null}
+const buzz=()=>{try{navigator.vibrate&&navigator.vibrate(8)}catch(e){}};
+let tt;function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),1800)}
+const pastNote=()=>{if(sel!==today())toast('Logged for '+long(sel))};
+
+/* ---------- render pieces ---------- */
+function ring(p,size,gid,g1,g2,label){const o=263.9*(1-p);return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" style="flex:none;filter:drop-shadow(0 0 12px #f5d26b2e)"><defs><linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${g1}"/><stop offset="1" stop-color="${g2}"/></linearGradient></defs><circle cx="50" cy="50" r="42" fill="none" stroke="#1d2338" stroke-width="7"/><circle cx="50" cy="50" r="42" fill="none" stroke="url(#${gid})" stroke-width="7" stroke-linecap="round" stroke-dasharray="263.9" stroke-dashoffset="${o}" transform="rotate(-90 50 50)" style="transition:stroke-dashoffset .6s"/>${label===false?'':`<text x="50" y="58" text-anchor="middle" fill="#e8eaf3" font-size="25" font-weight="500" font-family="Cormorant Garamond,Georgia,serif">${pc(p)}</text>`}</svg>`}
+function miniRing(p){const o=94.2*(1-p);return `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="#1d2338" stroke-width="4"/><circle cx="18" cy="18" r="15" fill="none" stroke="var(--cx)" stroke-width="4" stroke-linecap="round" stroke-dasharray="94.2" stroke-dashoffset="${o}" transform="rotate(-90 18 18)" opacity="${p?1:0}"/></svg>`}
+let popId=null;
+function gCard(g,pct,rowFn){const cl=ui.collapsed[g.id];
+ return `<section class="card" style="--c:var(${g.color})"><div class="ch" onclick="togG('${g.id}')"><div style="flex:1;min-width:0"><div class="tag">${esc(g.name)}</div><div class="nm">${esc(g.sub)}</div></div><span class="p">${pc(pct)}</span><span class="chev ${cl?'':'open'}">⌄</span></div><div class="bar"><i style="width:${pct*100}%"></i></div>${cl?'':g.items.map(i=>rowFn(g,i)).join('')+`<button class="row add" onclick="openGroup('${g.id}')">＋ Add / edit group</button>`}</section>`}
+function dRow(g,it){
+ const v=val(sel,it.id),dn=isDone(it,v),st=streak(it,sel);
+ const dots=[6,5,4,3,2,1,0].map(k=>`<i class="${isDone(it,val(addD(sel,-k),it.id))?'on':''}${k===0?' now':''}"></i>`).join('');
+ const vv=it.type==='num'?`<span>${fmN(v)} / ${fmN(it.target)}${it.unit?' '+esc(it.unit):''}</span>`:'';
+ return `<div class="row ${dn?'d':''}${popId===it.id?' pop':''}" onclick="tap('${g.id}','${it.id}')"><span class="ck"></span><div class="lbw"><div class="lb">${esc(it.label)}</div><div class="meta"><span class="mini">${dots}</span>${vv}${st>=2?`<span>${st}-day streak</span>`:''}</div></div><button class="mo" aria-label="Edit" onclick="event.stopPropagation();editItem('${g.id}','${it.id}')">⋯</button>${it.type==='num'&&!dn&&v?`<span class="f" style="width:${Math.min(v/(+it.target||1),1)*100}%"></span>`:''}</div>`}
+function wRow(g,it){
+ const c=weekCount(it.id,sel),t=+it.target||1,p=Math.min(c/t,1),dc=+val(sel,it.id)||0,w=wkStart(sel);
+ const dots=[0,1,2,3,4,5,6].map(k=>{const d=addD(w,k);return `<i class="${(+val(d,it.id)||0)>0?'on':''}${d===sel?' now':''}"></i>`}).join('');
+ return `<div class="row ${p>=1?'d':''}" onclick="bump('${it.id}',1)"><span class="ck"></span><div class="lbw"><div class="lb">${esc(it.label)}</div><div class="meta"><span>${c} / ${t} this week</span><span class="mini">${dots}</span></div></div><div class="stp" onclick="event.stopPropagation()"><button class="sb" aria-label="Remove a session" onclick="bump('${it.id}',-1)">−</button><span class="sn">${dc||''}</span></div><button class="mo" aria-label="Edit" onclick="event.stopPropagation();editItem('${g.id}','${it.id}')">⋯</button>${p<1&&c?`<span class="f" style="width:${p*100}%"></span>`:''}</div>`}
+function oRow(g,it){const p=onceP(it);
+ return `<div class="row ${p>=1?'d':''}" onclick="tapOnce('${g.id}','${it.id}')"><span class="ck"></span><div class="lbw"><div class="lb">${esc(it.label)}</div>${it.type==='count'?`<div class="meta"><span>${fmN(it.cur)} / ${fmN(it.target)}</span></div>`:''}</div><button class="mo" aria-label="Edit" onclick="event.stopPropagation();editItem('${g.id}','${it.id}')">⋯</button>${it.type==='count'&&p<1&&p>0?`<span class="f" style="width:${p*100}%"></span>`:''}</div>`}
+
+/* ---------- views ---------- */
+function vToday(){
+ const items=dailyItems(),dn=items.filter(it=>isDone(it,val(sel,it.id))).length,dp=items.length?dn/items.length:0,run=runDays(sel);
+ const ba=backupAge(),showB=hasData()&&(ba===null?Object.keys(ST.months).length&&daysLogged()>=7:ba>=14);
+ return (showB?`<div class="banner"><span>${ba===null?'You haven\'t backed up yet.':'Last backup '+ba+' days ago.'} Your log lives only on this phone.</span><button class="bb" style="--c:var(--c2)" onclick="downloadBackup()">Back up</button></div>`:'')+`<section class="card hero" style="--c:var(--cx)">${ring(dp,104,'gd','#ffe9a8','#e8a94a')}<div><div class="tag">${sel===today()?'Today':'Selected day'}</div><div class="big">${dn} of ${items.length}</div><div class="hint">daily practices done</div><div class="hint" style="margin-top:6px">Week sessions ${pc(weekPct(sel))}${run>=2?` · ${run}-day run at 80%+`:''}</div></div></section>`
+ +groups('daily').map(g=>gCard(g,dayPct(sel,g.items),dRow)).join('')+`<button class="addg" onclick="addGroup('daily')">＋ New daily group</button>`}
+function vWeek(){
+ const w=wkStart(sel),t=today();
+ const strip=[0,1,2,3,4,5,6].map(k=>{const d=addD(w,k);return `<button class="wd${d===sel?' sel':''}" ${d>t?'disabled':''} onclick="pick('${d}')"><small>${fd(d,{weekday:'narrow'})}</small>${fd(d,{day:'numeric'})}${miniRing(d>t?0:dayPct(d))}</button>`}).join('');
+ return `<section class="card" style="--c:var(--c1)"><div class="ch" style="cursor:default"><div style="flex:1"><div class="tag">Week of ${short(w)}</div><div class="nm">Sessions logged</div></div><span class="p">${pc(weekPct(sel))}</span></div><div class="bar"><i style="width:${weekPct(sel)*100}%"></i></div><div class="wstrip">${strip}</div><div class="hint" style="margin-top:10px">Tap a line to log a session on the selected day; − removes one. Rings show daily practices.</div></section>`
+ +groups('weekly').map(g=>gCard(g,g.items.length?avg(g.items.map(i=>wItemPct(i,sel))):0,wRow)).join('')+`<button class="addg" onclick="addGroup('weekly')">＋ New weekly group</button>`}
+function spark(id){
+ const pts=[];for(let k=27;k>=0;k--){const v=metric(addD(sel,-k),id);if(v!=null)pts.push([27-k,v])}
+ if(pts.length<2)return '';
+ const ys=pts.map(p=>p[1]);let lo=Math.min(...ys),hi=Math.max(...ys);if(hi===lo){hi+=1;lo-=1}
+ const P=pts.map(([x,y])=>[(x/27*196+2).toFixed(1),(22-(y-lo)/(hi-lo)*20).toFixed(1)]);
+ return `<svg viewBox="0 0 200 24" style="width:100%;height:24px;margin-top:10px;display:block"><polyline fill="none" stroke="var(--c4)" stroke-width="1.6" stroke-linejoin="round" points="${P.map(p=>p.join(',')).join(' ')}"/><circle cx="${P[P.length-1][0]}" cy="${P[P.length-1][1]}" r="2.4" fill="var(--c4)"/></svg>`}
+function vCheck(){
+ const x=peek(sel)||{},m=x.m||{};
+ const rows=ST.cfg.metrics.map(mt=>{const v=m[mt.id];
+  const l7=[];for(let k=0;k<7;k++){const q=metric(addD(sel,-k),mt.id);if(q!=null)l7.push(q)}
+  const inp=mt.type==='scale'?`<div class="scale">${[1,2,3,4,5].map(k=>`<button class="${+v===k?'on':''}" onclick="setM('${mt.id}',${k},true)">${k}</button>`).join('')}</div>`
+   :`<div class="numin"><button class="sb" onclick="stepM('${mt.id}',-1)">−</button><input type="number" inputmode="decimal" step="${mt.step||'any'}" value="${v===undefined?'':esc(v)}" placeholder="${esc(mt.unit||'')}" onchange="setM('${mt.id}',this.value===''?undefined:+this.value)"><button class="sb" onclick="stepM('${mt.id}',1)">+</button></div>`;
+  return `<div class="mc"><div class="mh"><b>${esc(mt.label)}</b><small class="hint">${mt.type==='scale'?'1–5':esc(mt.unit||'')}</small><span>${l7.length?'7-day avg '+fmN(Math.round(avg(l7)*10)/10):''}</span></div>${inp}${spark(mt.id)}</div>`}).join('');
+ const done=Object.keys(m).filter(k=>ST.cfg.metrics.some(mm=>mm.id===k)).length;
+ return `<section class="card" style="--c:var(--c4)"><div class="ch" style="cursor:default"><div style="flex:1"><div class="tag">Check-in</div><div class="nm">How you are ${sel===today()?'today':'on this day'}</div></div><span class="p">${done}/${ST.cfg.metrics.length}</span></div><div class="bar"><i style="width:${ST.cfg.metrics.length?done/ST.cfg.metrics.length*100:0}%"></i></div>${rows}<button class="row add" onclick="openMetrics()">＋ Add / edit check-in fields</button></section>
+ <section class="card" style="--c:var(--c1)"><div class="tag">Notes</div><div class="nm" style="margin-bottom:10px">Observations</div><textarea placeholder="What helped, what got in the way, how voice / posture / eyes felt…" onchange="setNote(this.value)">${esc(x.n||'')}</textarea></section>`}
+
+/* ---------- charts ---------- */
+const CH={};let chN=0;
+const chartW=()=>Math.max(260,Math.min((($('main').clientWidth||380)-30-2),560));
+function roll(vals,k=7){return vals.map((_,i)=>{const w=vals.slice(Math.max(0,i-k+1),i+1).filter(v=>v!=null);return w.length?avg(w):null})}
+function lineChart(o){
+ const id='ch'+(chN++),W=chartW(),H=170,pl=34,pr=10,pt=8,pb=24,n=o.days.length,iw=W-pl-pr,ih=H-pt-pb;
+ const X=i=>pl+(n<2?iw/2:i*iw/(n-1)),Y=v=>pt+ih-(v-o.lo)/((o.hi-o.lo)||1)*ih;
+ const grid=o.ticks.map(t=>`<line x1="${pl}" x2="${W-pr}" y1="${Y(t)}" y2="${Y(t)}" stroke="#ffffff0f"/><text x="${pl-6}" y="${Y(t)+4}" text-anchor="end" font-size="11" fill="#8b92ad">${o.tf(t)}</text>`).join('');
+ const xl=[...new Set([0,Math.floor((n-1)/2),n-1])].map(i=>`<text x="${X(i)}" y="${H-6}" text-anchor="${i===0?'start':i===n-1?'end':'middle'}" font-size="11" fill="#8b92ad">${short(o.days[i])}</text>`).join('');
+ let marks='';
+ if(o.bars){const bw=Math.max(1.5,iw/n-2);o.vals.forEach((v,i)=>{if(v==null)return;const y=Y(v);marks+=`<rect x="${(X(i)-bw/2).toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(pt+ih-y,0).toFixed(1)}" rx="${Math.min(2,bw/2)}" fill="${o.color}" opacity=".3"/>`})}
+ else o.vals.forEach((v,i)=>{if(v!=null)marks+=`<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="2.6" fill="${o.color}" opacity=".5"/>`});
+ let path='',pen=false;o.avg.forEach((v,i)=>{if(v==null){pen=false;return}path+=(pen?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1);pen=true});
+ CH[id]={o,W,pl,iw,n,X,Y};
+ return `<div class="chart" data-ch="${id}"><svg viewBox="0 0 ${W} ${H}">${grid}${marks}<path d="${path}" fill="none" stroke="${o.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><line class="hl" y1="${pt}" y2="${pt+ih}" stroke="#ffffff50" style="display:none"/><circle class="hp" r="4.5" fill="${o.color}" stroke="#10131f" stroke-width="2" style="display:none"/>${xl}<rect x="${pl}" y="0" width="${iw}" height="${H}" fill="transparent"/></svg><div class="tip"></div></div>`}
+function chartAt(e){const el=e.target.closest&&e.target.closest('.chart');if(!el)return;const c=CH[el.dataset.ch];if(!c)return;
+ const sv=el.querySelector('svg'),r=sv.getBoundingClientRect(),sx=c.W/r.width,x=(e.clientX-r.left)*sx;
+ let i=Math.round((x-c.pl)/(c.n<2?1:c.iw/(c.n-1)));i=Math.max(0,Math.min(c.n-1,i));
+ const v=c.o.vals[i],a=c.o.avg[i],hl=el.querySelector('.hl'),hp=el.querySelector('.hp'),tp=el.querySelector('.tip'),X=c.X(i);
+ hl.setAttribute('x1',X);hl.setAttribute('x2',X);hl.style.display='';
+ const yv=a!=null?a:v;if(yv!=null){hp.setAttribute('cx',X);hp.setAttribute('cy',c.Y(yv));hp.style.display=''}else hp.style.display='none';
+ tp.innerHTML=`<b>${long(c.o.days[i])}</b><br>${v==null?'no entry':c.o.vf(v)}${a!=null?` · 7-day avg ${c.o.vf(a)}`:''}`;tp.style.display='block';
+ tp.style.left=Math.max(80,Math.min(r.width-80,X/sx))+'px'}
+document.addEventListener('pointermove',chartAt);document.addEventListener('pointerdown',chartAt);
+document.addEventListener('pointerout',e=>{const el=e.target.closest&&e.target.closest('.chart');if(el&&!el.contains(e.relatedTarget)){el.querySelectorAll('.hl,.hp,.tip').forEach(n=>n.style.display='none')}});
+function heatmap(days,fn,color,onTap){
+ const t=today(),first=wkStart(days[0]),cols=[];let ws=first;
+ while(ws<=days[days.length-1]){cols.push(ws);ws=addD(ws,7)}
+ const cs=Math.max(10,Math.min(22,Math.floor((chartW()-4)/cols.length)-3));
+ const html=cols.map(w=>`<div class="hcol">${[0,1,2,3,4,5,6].map(k=>{const d=addD(w,k);
+  if(d<days[0]||d>t)return `<div class="hc na" style="width:${cs}px;height:${cs}px"></div>`;
+  const p=fn(d);const bg=p==null?'#141a2c':`color-mix(in srgb,${color} ${Math.round(12+p*88)}%,#141a2c)`;
+  return `<button class="hc${d===sel?' sel':''}" title="${long(d)}${p==null?'':' · '+pc(p)}" style="width:${cs}px;height:${cs}px;background:${p===0?'#1d2440':bg}" ${onTap?`onclick="${onTap}('${d}')"`:''}></button>`}).join('')}</div>`).join('');
+ return `<div class="heatw"><div class="heat">${html}</div></div><div class="hint" style="display:flex;align-items:center;gap:6px;margin-top:6px">Less <span style="width:12px;height:12px;border-radius:3px;background:#1d2440"></span><span style="width:12px;height:12px;border-radius:3px;background:color-mix(in srgb,${color} 50%,#141a2c)"></span><span style="width:12px;height:12px;border-radius:3px;background:${color}"></span> More${onTap?' · tap a day to open it':''}</div>`}
+function bestRun(it,days){let b=0,c=0;days.forEach(d=>{if(isDone(it,val(d,it.id))){c++;b=Math.max(b,c)}else c=0});return b}
+
+function vHistory(){
+ const start=firstDay(),n=ui.range,t=today();
+ const seg=`<div class="seg">${[[30,'30 days'],[90,'90 days'],[365,'Year']].map(([v,l])=>`<button class="${n===v?'on':''}" onclick="ui.range=${v};saveUI();render()">${l}</button>`).join('')}</div>`;
+ if(!start)return `<section class="card" style="--c:var(--cx)">${seg}<div class="empty">Nothing logged yet. Once you start ticking practices and filling in check-ins, your charts, streaks and patterns appear here.</div></section>`;
+ const days=[];for(let k=n-1;k>=0;k--)days.push(addD(t,-k));
+ const tracked=days.filter(d=>d>=start);
+ const comp=days.map(d=>d<start?null:dayPct(d)),cAvg=roll(comp).map((v,i)=>comp[i]==null?null:v);
+ const weeks=[...new Set(tracked.map(wkStart))].filter(w=>addD(w,6)<t||w===wkStart(t));
+ const fullW=weeks.filter(w=>addD(w,6)<t);
+ const wHit=fullW.filter(w=>weekPct(w)>=1).length;
+ const tiles=`<div class="tiles"><div class="tile"><b>${pc(avg(tracked.map(d=>dayPct(d))))}</b><span>average daily completion</span></div><div class="tile"><b>${tracked.filter(d=>dayPct(d)>=.8).length}</b><span>days at 80%+ of ${tracked.length}</span></div><div class="tile"><b>${fullW.length?wHit+'/'+fullW.length:'–'}</b><span>full weeks with all session targets met</span></div></div>`;
+ const c1=lineChart({days,vals:comp,avg:cAvg,color:'#f5d26b',bars:true,lo:0,hi:1,ticks:[0,.5,1],tf:pc,vf:pc});
+ const hm=heatmap(days,d=>d<start?null:dayPct(d),'var(--cx)','openDay');
+ // metrics
+ const ms=ST.cfg.metrics;if(!ms.some(m=>m.id===ui.metric))ui.metric=ms.length?ms[0].id:null;
+ let mSec='';
+ if(ms.length){const mt=ms.find(m=>m.id===ui.metric),vals=days.map(d=>metric(d,mt.id)),have=vals.filter(v=>v!=null);
+  const chips=`<div class="chips">${ms.map(m=>`<button class="${m.id===ui.metric?'on':''}" onclick="ui.metric='${m.id}';saveUI();render()">${esc(m.label)}</button>`).join('')}</div>`;
+  let body;
+  if(have.length<2)body=`<div class="empty">Log ${esc(mt.label.toLowerCase())} on a few days to see its trend.</div>`;
+  else{let lo,hi,ticks;if(mt.type==='scale'){lo=1;hi=5;ticks=[1,3,5]}else{lo=Math.floor(Math.min(...have));hi=Math.ceil(Math.max(...have));if(hi===lo){hi++;lo--}ticks=[lo,Math.round((lo+hi)/2*10)/10,hi]}
+   const u=mt.unit?' '+mt.unit:'',vf=v=>fmN(Math.round(v*10)/10)+u;
+   body=lineChart({days,vals,avg:roll(vals),color:'#6fb7ff',lo,hi,ticks,tf:v=>fmN(v),vf})+`<div class="hint" style="margin-top:6px">Dots are daily entries; the line is the 7-day average. Average over this period: ${vf(avg(have))} (${have.length} entries).</div>`}
+  mSec=`<section class="card" style="--c:var(--c4)"><div class="tag">Check-in trends</div><div class="nm" style="margin-bottom:6px">${esc(mt.label)}</div>${chips}${body}</section>`}
+ // practices
+ const pRows=groups('daily').map(g=>g.items.map(it=>{const r=tracked.length?tracked.filter(d=>isDone(it,val(d,it.id))).length/tracked.length:0;
+  return `<div class="pr" onclick="itemHist('${g.id}','${it.id}')"><div><div style="font-size:13.5px">${esc(it.label)}</div><div class="rb"><i style="width:${r*100}%;background:var(${g.color})"></i></div></div><div class="num">${pc(r)}</div><div class="num mu">${streak(it,t)}d / ${bestRun(it,tracked)}d</div></div>`}).join('')).join('');
+ const wRows=groups('weekly').map(g=>g.items.map(it=>{const ws=fullW.length?fullW:weeks;const a=ws.length?avg(ws.map(w=>weekCount(it.id,w))):0,r=Math.min(a/(+it.target||1),1);
+  return `<div class="pr" style="cursor:default"><div><div style="font-size:13.5px">${esc(it.label)}</div><div class="rb"><i style="width:${r*100}%;background:var(${g.color})"></i></div></div><div class="num">${fmN(Math.round(a*10)/10)}</div><div class="num mu">target ${it.target}</div></div>`}).join('')).join('');
+ // comparisons
+ let cSec='';
+ if(ms.length){if(!ms.some(m=>m.id===ui.cmp))ui.cmp=(ms.find(m=>m.type==='scale')||ms[0]).id;const mt=ms.find(m=>m.id===ui.cmp),lag=ui.lag?1:0;
+  const res=[];dailyItems().forEach(it=>{const y=[],no=[];tracked.forEach(d=>{const mv=metric(addD(d,lag),mt.id);if(mv==null)return;(isDone(it,val(d,it.id))?y:no).push(mv)});
+   if(y.length>=4&&no.length>=4)res.push({it,a:avg(y),b:avg(no),d:avg(y)-avg(no),ny:y.length,nn:no.length})});
+  res.sort((p,q)=>Math.abs(q.d)-Math.abs(p.d));
+  const all=tracked.map(d=>metric(addD(d,lag),mt.id)).filter(v=>v!=null),span=mt.type==='scale'?2:Math.max(1e-9,(Math.max(...all,0)-Math.min(...all,0))/2||1);
+  const u=mt.unit?' '+mt.unit:'',f=v=>fmN(Math.round(v*10)/10);
+  const list=res.length?res.slice(0,10).map(r=>{const w=Math.min(Math.abs(r.d)/span,1)*50;
+   return `<div class="cmp"><div class="t1">${esc(r.it.label)}<span>${f(r.a)} vs ${f(r.b)}${u} · ${r.d>=0?'+':'−'}${f(Math.abs(r.d))}</span></div><div class="dv"><i style="${r.d>=0?`left:50%;width:${w}%;background:var(--c0)`:`right:50%;width:${w}%;background:var(--c3)`}"></i></div></div>`}).join('')
+   :`<div class="empty">Not enough data yet. Each practice needs at least 4 days done and 4 not done, with ${esc(mt.label.toLowerCase())} logged.</div>`;
+  cSec=`<section class="card" style="--c:var(--c0)"><div class="tag">Patterns</div><div class="nm">What seems to help</div><div class="hint" style="margin:4px 0 10px">Average ${esc(mt.label.toLowerCase())} on days you did each practice vs days you didn't. Teal is higher, pink lower. These are associations, not proof.</div><div class="chips">${ms.map(m=>`<button class="${m.id===ui.cmp?'on':''}" onclick="ui.cmp='${m.id}';saveUI();render()">${esc(m.label)}</button>`).join('')}</div><div class="seg" style="margin-bottom:6px"><button class="${!ui.lag?'on':''}" onclick="ui.lag=0;saveUI();render()">Same day</button><button class="${ui.lag?'on':''}" onclick="ui.lag=1;saveUI();render()">Next day</button></div>${list}</section>`}
+ return `<div style="margin-top:12px">${seg}</div>
+ <section class="card" style="--c:var(--cx)"><div class="tag">Overview</div><div class="nm" style="margin-bottom:12px">Last ${n===365?'year':n+' days'}</div>${tiles}</section>
+ <section class="card" style="--c:var(--cx)"><div class="tag">Daily completion</div><div class="nm">Bars by day · line is the 7-day average</div>${c1}</section>
+ <section class="card" style="--c:var(--cx)"><div class="tag">Consistency</div><div class="nm" style="margin-bottom:10px">Calendar</div>${hm}</section>
+ ${mSec}
+ <section class="card" style="--c:var(--c1)"><div class="tag">Practices</div><div class="nm" style="margin-bottom:6px">Daily</div><div class="pr h"><div>Practice · tap for detail</div><div class="num">Done</div><div class="num">Now / best</div></div>${pRows}
+ <div class="nm" style="margin:20px 0 6px">Weekly</div><div class="pr h"><div>Practice</div><div class="num">Avg/wk</div><div class="num"></div></div>${wRows}</section>
+ ${cSec}
+ <button class="addg" onclick="downloadCSV()">Download all data as CSV</button>`}
+function vMore(){
+ const once=groups('once');
+ return groups('once').map(g=>gCard(g,g.items.length?avg(g.items.map(onceP)):0,oRow)).join('')+`<button class="addg" onclick="addGroup('once')">＋ New group of one-offs</button>
+ <section class="card" style="--c:var(--mu)"><div class="tag">Settings & data</div>
+ <button class="set" onclick="openMetrics()"><span>Check-in fields</span><em>${ST.cfg.metrics.length} ›</em></button>
+ <button class="set" onclick="downloadBackup()"><span>Download backup file</span><em>${backupAge()===null?'never':backupAge()===0?'today':backupAge()+'d ago'} ›</em></button>
+ <button class="set" onclick="$('fileIn').click()"><span>Restore from backup file</span><em>›</em></button>
+ <button class="set" onclick="downloadCSV()"><span>Download data as CSV</span><em>›</em></button>
+ <button class="set" onclick="openData()"><span>Paste / copy backup text</span><em>›</em></button>
+ <div class="hint" style="padding:10px 4px">Your log is stored only on this phone${persisted?', protected from automatic clearing':''}. Download a backup now and then (to Drive or email it to yourself) so you can restore it on a new phone.</div></section>`}
+
+const TABS=[['today','Today','<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'],
+ ['week','Week','<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>'],
+ ['check','Check-in','<path d="M3 12h4l3-7 4 14 3-7h4"/>'],
+ ['history','History','<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'],
+ ['more','More','<circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/>']];
+const VIEWS={today:vToday,week:vWeek,check:vCheck,history:vHistory,more:vMore};
+function render(anim){
+ if(!VIEWS[ui.view])ui.view='today';
+ const dated=['today','week','check'].includes(ui.view);
+ $('dnav').style.display=dated?'flex':'none';
+ if(ui.view==='week'){const w=wkStart(sel);$('dl').innerHTML=`${short(w)} – ${short(addD(w,6))}<small>${fd(sel,{weekday:'long',day:'numeric'})} selected</small>`}
+ else $('dl').innerHTML=`${fd(sel,{weekday:'long',day:'numeric',month:'long'})}${sel===today()?'':'<small>past day</small>'}`;
+ $('tb').style.display=sel===today()?'none':'';$('nx').disabled=sel>=today();
+ $('tabs').innerHTML=TABS.map(([k,l,ic])=>`<button class="tab${ui.view===k?' on':''}" onclick="setView('${k}')"><span class="pb"><svg viewBox="0 0 24 24">${ic}</svg></span>${l}</button>`).join('');
+ for(const k in CH)delete CH[k];
+ $('main').innerHTML=`<div class="view ${anim||''}">${VIEWS[ui.view]()}</div>`;
+ popId=null;
+ if(ui.view==='history'){const h=document.querySelector('.heatw');if(h)h.scrollLeft=h.scrollWidth}
+}
+
+/* ---------- actions ---------- */
+function setView(v){if(v===ui.view){scrollTo({top:0,behavior:'smooth'});return}ui.view=v;saveUI();render();scrollTo(0,0)}
+function go(n){if(ui.view==='week')n*=7;let s=addD(sel,n);if(s>today())s=today();if(s===sel)return;sel=s;render(n>0?'sL':'sR')}
+function goToday(){sel=today();render()}
+function pick(d){sel=d;render()}
+function openDay(d){sel=d;ui.view='today';saveUI();render();scrollTo(0,0)}
+function togG(id){ui.collapsed[id]=!ui.collapsed[id];saveUI();render()}
+function tap(gid,iid){const it=itemOf(gid,iid);if(it.type==='num')return openNum(gid,iid);const on=!val(sel,iid);setVal(sel,iid,on?1:undefined);if(on){popId=iid;buzz();pastNote()}render()}
+function bump(id,n){let v=(+val(sel,id)||0)+n;if(v<0)v=0;setVal(sel,id,v||undefined);if(n>0){buzz();pastNote()}render()}
+function tapOnce(gid,iid){const it=itemOf(gid,iid);if(it.type==='count')return openCount(gid,iid);it.done=!it.done;if(it.done)buzz();touchCfg();render()}
+function setM(id,v,toggle){const x=day(sel);x.m=x.m||{};if(toggle&&x.m[id]===v)v=undefined;if(v===undefined||isNaN(v))delete x.m[id];else x.m[id]=v;touch('log-'+sel.slice(0,7));if(toggle){buzz();render()}}
+function stepM(id,d){const mt=ST.cfg.metrics.find(m=>m.id===id),st=+mt.step||1;let v=metric(sel,id);if(v==null)v=lastMetric(id);if(v==null)v=0;else if(metric(sel,id)!=null)v=v+d*st;v=Math.round(v*1000)/1000;setM(id,v);render()}
+function setNote(t){const x=day(sel);if(t.trim())x.n=t;else delete x.n;touch('log-'+sel.slice(0,7))}
+let sx0=null;
+$('main').addEventListener('touchstart',e=>{const t=e.target;if(!['today','week','check'].includes(ui.view)||t.closest('.chart,.heatw,input,textarea,.seg,.chips,.wstrip')){sx0=null;return}sx0=[e.touches[0].clientX,e.touches[0].clientY]},{passive:true});
+$('main').addEventListener('touchend',e=>{if(!sx0)return;const t=e.changedTouches[0],dx=t.clientX-sx0[0],dy=t.clientY-sx0[1];sx0=null;if(Math.abs(dx)>70&&Math.abs(dx)>2*Math.abs(dy))go(dx<0?1:-1)},{passive:true});
+let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{if(ui.view==='history')render()},250)});
+
+/* ---------- sheets ---------- */
+function show(h,c){if(!$('sh').classList.contains('on')){try{history.pushState({sheet:1},'')}catch(e){}}const s=$('sh');s.style.setProperty('--c',`var(${c||'--c0'})`);s.innerHTML='<div class="grab"></div>'+h;s.scrollTop=0;s.classList.add('on');$('bd').classList.add('on')}
+function closeM(fromPop){const was=$('sh').classList.contains('on');if(was&&!fromPop&&history.state&&history.state.sheet){history.back();return}$('sh').classList.remove('on');$('bd').classList.remove('on');render()}
+addEventListener('popstate',()=>{if($('sh').classList.contains('on'))closeM(true)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('sh').classList.contains('on'))closeM()});
+function arm(b,fn){if(b.dataset.armed){fn();return}b.dataset.armed=1;const t=b.textContent;b.textContent='Tap again to confirm';setTimeout(()=>{if(b.isConnected){delete b.dataset.armed;b.textContent=t}},4000)}
+const DONE='<div class="btns" style="margin-top:18px"><button class="bb g" style="flex:1" onclick="closeM()">Done</button></div>';
+
+function openNum(gid,iid){const g=grp(gid),it=itemOf(gid,iid),v=+val(sel,iid)||0;
+ show(`<div class="tag">${esc(g.name)}</div><h3>${esc(it.label)}</h3><div class="bignum"><button class="sb" onclick="numStep('${iid}',-1)">−</button><input type="number" inputmode="decimal" id="nv" step="any" min="0" value="${v||''}" placeholder="0" onchange="setVal(sel,'${iid}',+this.value)"><button class="sb" onclick="numStep('${iid}',1)">+</button></div><div class="hint" style="text-align:center">Target ${fmN(it.target)} ${esc(it.unit||'')} · ${long(sel)}</div><div class="btns"><button class="bb" style="flex:1" onclick="setVal(sel,'${iid}',${+it.target||1});buzz();closeM()">Hit target</button><button class="bb g" onclick="setVal(sel,'${iid}',undefined);closeM()">Clear</button><button class="bb g" onclick="closeM()">Done</button></div>${it.note?`<p class="hint">${esc(it.note)}</p>`:''}`,g.color)}
+function numStep(iid,d){const it=dailyItems().find(i=>i.id===iid),stp=(+it.target>=100)?Math.pow(10,Math.floor(Math.log10(+it.target))-1)*5:(+it.target<=3&&String(it.target).includes('.')?0.25:1);let v=Math.max(0,(+val(sel,iid)||0)+d*stp);v=Math.round(v*100)/100;setVal(sel,iid,v||undefined);$('nv').value=v||''}
+function openCount(gid,iid){const g=grp(gid),it=itemOf(gid,iid);
+ show(`<div class="tag">${esc(g.name)}</div><h3>${esc(it.label)}</h3><div class="bignum"><button class="sb" onclick="cStep('${gid}','${iid}',-1)">−</button><input type="number" id="cv" min="0" value="${+it.cur||0}" onchange="itemOf('${gid}','${iid}').cur=+this.value||0;touchCfg()"><button class="sb" onclick="cStep('${gid}','${iid}',1)">+</button></div><div class="hint" style="text-align:center">Target ${fmN(it.target)}</div>${DONE}`,g.color)}
+function cStep(gid,iid,d){const it=itemOf(gid,iid);it.cur=Math.max(0,(+it.cur||0)+d);touchCfg();$('cv').value=it.cur;if(d>0)buzz()}
+
+function itemHist(gid,iid){const g=grp(gid),it=itemOf(gid,iid),t=today(),start=firstDay(),days=[];for(let k=ui.range-1;k>=0;k--)days.push(addD(t,-k));
+ const tracked=days.filter(d=>start&&d>=start),dn=tracked.filter(d=>isDone(it,val(d,it.id))).length;
+ const nums=it.type==='num'?tracked.map(d=>+val(d,it.id)||0):null;
+ show(`<div class="tag">${esc(g.name)}</div><h3>${esc(it.label)}</h3><div class="tiles"><div class="tile"><b>${tracked.length?pc(dn/tracked.length):'–'}</b><span>done, last ${ui.range===365?'year':ui.range+' days'}</span></div><div class="tile"><b>${streak(it,t)}</b><span>current streak</span></div><div class="tile"><b>${bestRun(it,tracked)}</b><span>best streak</span></div></div>${nums?`<p class="hint">Average ${fmN(Math.round(avg(nums)*10)/10)} ${esc(it.unit||'')} a day.</p>`:''}<h4>Calendar</h4>${heatmap(days,d=>d<(start||t)?null:(isDone(it,val(d,it.id))?1:0),`var(${g.color})`,null)}<div class="btns" style="margin-top:18px"><button class="bb g" onclick="editItem('${gid}','${iid}')">Edit practice</button><button class="bb g" style="flex:1" onclick="closeM()">Done</button></div>`,g.color);
+ const h=$('sh').querySelector('.heatw');if(h)h.scrollLeft=h.scrollWidth}
+
+function editItem(gid,iid){
+ const g=grp(gid),it=itemOf(gid,iid),k=g.kind;let typ='';
+ if(k==='daily')typ=`<div class="fr"><label>Type</label><select onchange="chType('${gid}','${iid}',this.value)"><option value="check"${it.type==='check'?' selected':''}>Tick when done</option><option value="num"${it.type==='num'?' selected':''}>Amount with a target</option></select></div>${it.type==='num'?`<div class="fr"><label>Daily target</label><input type="number" step="any" min="0" value="${it.target}" onchange="setI('${gid}','${iid}','target',+this.value||1)"><input type="text" style="width:90px" placeholder="unit" value="${esc(it.unit||'')}" onchange="setI('${gid}','${iid}','unit',this.value)"></div>`:''}`;
+ if(k==='weekly')typ=`<div class="fr"><label>Sessions per week</label><input type="number" min="1" value="${it.target}" onchange="setI('${gid}','${iid}','target',+this.value||1)"></div>`;
+ if(k==='once')typ=`<div class="fr"><label>Type</label><select onchange="chType('${gid}','${iid}',this.value)"><option value="check"${it.type==='check'?' selected':''}>Tick when done</option><option value="count"${it.type==='count'?' selected':''}>Count toward a target</option></select></div>${it.type==='count'?`<div class="fr"><label>Target</label><input type="number" min="1" value="${it.target}" onchange="setI('${gid}','${iid}','target',+this.value||1)"></div>`:''}`;
+ const others=groups(k).filter(x=>x.id!==gid);
+ show(`<div class="tag">${esc(g.name)}</div><h3>Edit practice</h3><input type="text" value="${esc(it.label)}" onchange="setI('${gid}','${iid}','label',this.value)">${typ}
+ <h4>Note</h4><textarea placeholder="Why, how, dose, teacher, link…" onchange="setI('${gid}','${iid}','note',this.value)">${esc(it.note||'')}</textarea>
+ <h4>Arrange</h4><div class="btns"><button class="bb g" onclick="mv('${gid}','${iid}',-1)">Move up</button><button class="bb g" onclick="mv('${gid}','${iid}',1)">Move down</button>${others.length?`<select onchange="if(this.value)moveTo('${gid}','${iid}',this.value)"><option value="">Move to group…</option>${others.map(o=>`<option value="${o.id}">${esc(o.name)}</option>`).join('')}</select>`:''}</div>
+ <div class="btns"><button class="bb dg" onclick="arm(this,()=>delItem('${gid}','${iid}'))">Delete practice</button></div><p class="hint">Deleting a practice hides it; its past log stays in your data.</p>${DONE}`,g.color)}
+function setI(gid,iid,f,v){itemOf(gid,iid)[f]=v;touchCfg()}
+function chType(gid,iid,t){const it=itemOf(gid,iid);it.type=t;if(t==='num'){it.target=it.target||1;it.unit=it.unit||''}if(t==='count'){it.target=it.target||1;it.cur=it.cur||0}touchCfg();editItem(gid,iid)}
+function mv(gid,iid,d){const g=grp(gid),i=g.items.findIndex(x=>x.id===iid),j=i+d;if(j<0||j>=g.items.length)return;[g.items[i],g.items[j]]=[g.items[j],g.items[i]];touchCfg();toast(d<0?'Moved up':'Moved down')}
+function moveTo(gid,iid,to){const g=grp(gid),it=itemOf(gid,iid);g.items=g.items.filter(x=>x.id!==iid);grp(to).items.push(it);touchCfg();closeM()}
+function delItem(gid,iid){const g=grp(gid);g.items=g.items.filter(x=>x.id!==iid);touchCfg();closeM()}
+
+function openGroup(gid){
+ const g=grp(gid),k=g.kind;
+ const tgt=k==='daily'?`<select id="nty"><option value="check">Tick when done</option><option value="num">Amount with a target</option></select><input type="number" id="nt" step="any" placeholder="target" style="width:100px"><input type="text" id="nu" style="width:80px" placeholder="unit">`
+  :k==='weekly'?`<input type="number" id="nt" min="1" placeholder="per week" value="1" style="width:110px">`
+  :`<input type="number" id="nt" min="1" placeholder="count target (optional)" style="flex:1">`;
+ show(`<div class="tag">${esc(g.name)}</div><h3>${esc(g.sub)}</h3>
+ <h4>Add practice</h4><input type="text" id="nl" placeholder="${k==='daily'?'e.g. Cold shower finish':k==='weekly'?'e.g. Swim':'e.g. Optician appointment'}" onkeydown="if(event.key==='Enter')addI('${gid}')"><div class="btns">${tgt}<button class="bb" onclick="addI('${gid}')">Add</button></div>
+ <h4>Group name</h4><input type="text" value="${esc(g.name)}" onchange="grp('${gid}').name=this.value;touchCfg()"><div style="height:8px"></div><input type="text" value="${esc(g.sub)}" onchange="grp('${gid}').sub=this.value;touchCfg()">
+ <h4>Colour</h4><div class="sw">${COLORS.map(c=>`<button class="${g.color===c?'on':''}" style="background:var(${c})" aria-label="Colour" onclick="grp('${gid}').color='${c}';touchCfg();openGroup('${gid}')"></button>`).join('')}</div>
+ <h4>Arrange</h4><div class="btns"><button class="bb g" onclick="mvG('${gid}',-1)">Move group up</button><button class="bb g" onclick="mvG('${gid}',1)">Move group down</button><button class="bb dg" onclick="arm(this,()=>delGroup('${gid}'))">Delete group</button></div>${DONE}`,g.color)}
+function addI(gid){const g=grp(gid),l=$('nl').value.trim();if(!l)return;const t=+($('nt')||{}).value||0;let it;
+ if(g.kind==='daily')it=($('nty').value==='num')?N(nid(),l,t||1,$('nu').value.trim()):C(nid(),l);
+ else if(g.kind==='weekly')it=S(nid(),l,t||1);
+ else it=t>0?C(nid(),l,{type:'count',cur:0,target:t}):C(nid(),l,{done:false});
+ g.items.push(it);touchCfg();toast('Added: '+l);$('nl').value='';$('nl').focus()}
+function mvG(gid,d){const a=ST.cfg.groups,g=grp(gid),same=a.filter(x=>x.kind===g.kind),i=same.indexOf(g),o=same[i+d];if(!o)return;const ia=a.indexOf(g),ib=a.indexOf(o);[a[ia],a[ib]]=[a[ib],a[ia]];touchCfg();toast(d<0?'Moved up':'Moved down')}
+function delGroup(gid){ST.cfg.groups=ST.cfg.groups.filter(g=>g.id!==gid);touchCfg();closeM()}
+function addGroup(kind){const g={id:'g'+nid(),kind,color:COLORS[ST.cfg.groups.filter(x=>x.kind===kind).length%7],name:'New group',sub:kind==='weekly'?'Sessions this week':kind==='daily'?'Daily practices':'One-off steps',items:[]};ST.cfg.groups.push(g);touchCfg();openGroup(g.id)}
+
+function openMetrics(){
+ const rows=ST.cfg.metrics.map((m,ix)=>`<div class="fr"><input type="text" style="flex:1;width:auto;min-width:120px" value="${esc(m.label)}" onchange="ST.cfg.metrics[${ix}].label=this.value;touchCfg()"><select onchange="ST.cfg.metrics[${ix}].type=this.value;touchCfg();openMetrics()"><option value="scale"${m.type==='scale'?' selected':''}>1–5 scale</option><option value="num"${m.type==='num'?' selected':''}>Number</option></select>${m.type==='num'?`<input type="text" style="width:70px" placeholder="unit" value="${esc(m.unit||'')}" onchange="ST.cfg.metrics[${ix}].unit=this.value;touchCfg()">`:''}<button class="bb g" aria-label="Move up" onclick="mvM(${ix},-1)">↑</button><button class="bb dg" aria-label="Delete" onclick="arm(this,()=>{ST.cfg.metrics.splice(${ix},1);touchCfg();openMetrics()})">✕</button></div>`).join('');
+ show(`<div class="tag">Check-in</div><h3>Check-in fields</h3>${rows}<h4>Add field</h4><input type="text" id="ml" placeholder="e.g. HRV, Skin, Libido"><div class="btns"><select id="mt"><option value="scale">1–5 scale</option><option value="num">Number</option></select><input type="text" id="mu" placeholder="unit" style="width:90px"><button class="bb" onclick="addM()">Add</button></div>${DONE}`,'--c4')}
+function mvM(ix,d){const a=ST.cfg.metrics,j=ix+d;if(j<0||j>=a.length)return;[a[ix],a[j]]=[a[j],a[ix]];touchCfg();openMetrics()}
+function addM(){const l=$('ml').value.trim();if(!l)return;ST.cfg.metrics.push({id:'m'+nid(),label:l,type:$('mt').value,unit:$('mu').value.trim(),step:'any'});touchCfg();openMetrics()}
+
+function csv(){
+ const d=dailyItems(),w=groups('weekly').flatMap(g=>g.items),m=ST.cfg.metrics,q=s=>{s=String(s==null?'':s);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
+ const head=['date',...d.map(i=>i.label),...w.map(i=>i.label+' (sessions)'),...m.map(x=>x.label+(x.unit?' ('+x.unit+')':'')),'daily completion %','notes'];
+ const all=[];for(const k in ST.months)for(const ds in ((ST.months[k]||{}).days||{}))all.push(ds);all.sort();
+ const rows=all.map(ds=>{const x=peek(ds)||{},i=x.i||{},mm=x.m||{};return [ds,...d.map(it=>it.type==='num'?(i[it.id]||''):(isDone(it,i[it.id])?1:'')),...w.map(it=>i[it.id]||''),...m.map(z=>mm[z.id]==null?'':mm[z.id]),Math.round(dayPct(ds)*100),x.n||''].map(q).join(',')});
+ return [head.map(q).join(','),...rows].join('\n')}
+function dl(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000)}
+function downloadBackup(){dl('sel-backup-'+today()+'.json',JSON.stringify({app:'sel',v:1,exported:new Date().toISOString(),cfg:ST.cfg,months:ST.months}),'application/json');try{localStorage.setItem('pv-lastbackup',today())}catch(e){}toast('Backup saved to Downloads');render()}
+function downloadCSV(){dl('sel-data-'+today()+'.csv',csv(),'text/csv');toast('CSV saved to Downloads')}
+function restoreObj(n,how){if(!n||!n.cfg||!n.cfg.groups)throw 0;
+ const merge=how==='merge';if(merge){for(const k in (n.months||{})){ST.months[k]=ST.months[k]||{days:{}};const src=n.months[k].days||{};for(const d in src){if(!ST.months[k].days[d])ST.months[k].days[d]=src[d]}}}
+ else{ST.cfg=n.cfg;ST.months=n.months||{}}
+ migrate(ST.cfg);saveLocal()}
+function readBackup(inp){const f=inp.files&&inp.files[0];inp.value='';if(!f)return;const r=new FileReader();r.onload=()=>{let n;try{n=JSON.parse(r.result);if(!n.cfg)throw 0}catch(e){toast('That file is not a Sel. backup');return}
+ const cnt=Object.values(n.months||{}).reduce((a,m)=>a+Object.keys(m.days||{}).length,0);
+ show(`<h3>Restore backup</h3><p class="hint">${esc(f.name)} · ${cnt} logged days.</p><div class="btns" style="flex-direction:column"><button class="bb" onclick="doRestore('replace')">Replace everything on this phone</button><button class="bb g" onclick="doRestore('merge')">Add missing days only (keep current practices)</button><button class="bb g" onclick="closeM()">Cancel</button></div>`,'--cx');window._pending=n};r.readAsText(f)}
+function doRestore(how){try{restoreObj(window._pending,how);window._pending=null;toast('Restored');closeM()}catch(e){toast('Could not restore that backup')}}
+function openCSV(){show(`<h3>Data as CSV</h3><div class="hint">One row per day, ready to paste into a spreadsheet.</div><textarea id="dt" style="min-height:200px;margin:10px 0;font-size:12px" readonly>${esc(csv())}</textarea><div class="btns"><button class="bb" onclick="copyD(this)">Copy</button><button class="bb g" style="flex:1" onclick="closeM()">Done</button></div>`,'--cx')}
+function openData(){
+ show(`<h3>Backup text</h3><div class="hint">Copy this text to keep it, or paste text exported from the earlier web version and tap Restore. Restore replaces everything on this phone.</div><textarea id="dt" style="min-height:200px;margin:10px 0;font-size:12px">${esc(JSON.stringify({cfg:ST.cfg,months:ST.months}))}</textarea>
+ <div class="btns"><button class="bb" onclick="copyD(this)">Copy</button><button class="bb g" onclick="importD()">Restore</button><button class="bb dg" onclick="arm(this,resetCfg)">Reset practices</button></div><p class="hint">Reset restores the default list of practices; your logged history is kept.</p>${DONE}`,'--cx')}
+async function copyD(b){const t=$('dt');try{await navigator.clipboard.writeText(t.value);b.textContent='Copied'}catch(e){t.select();try{document.execCommand('copy');b.textContent='Copied'}catch(_){b.textContent='Select & copy manually'}}}
+function importD(){try{restoreObj(JSON.parse($('dt').value),'replace');toast('Restored');closeM()}catch(e){$('dt').style.borderColor='var(--c3)';toast('That text is not valid backup data')}}
+function resetCfg(){ST.cfg=clone(DEF);touchCfg();toast('Practices reset');closeM()}
+
+{const v=new URLSearchParams(location.search).get('view');if(v&&VIEWS[v]){ui.view=v;history.replaceState(null,'',location.pathname)}}
+render();
+askPersist();
+let newSW=null;
+if('serviceWorker' in navigator){addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').then(reg=>{
+ const watch=w=>{if(!w)return;w.addEventListener('statechange',()=>{if(w.state==='installed'&&navigator.serviceWorker.controller){newSW=w;$('upd').classList.add('on')}})};
+ if(reg.waiting&&navigator.serviceWorker.controller){newSW=reg.waiting;$('upd').classList.add('on')}
+ reg.addEventListener('updatefound',()=>watch(reg.installing));
+ setInterval(()=>reg.update().catch(()=>{}),60*60*1000);
+}).catch(()=>{})});
+ let reloaded=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!reloaded){reloaded=true;location.reload()}})}
+function applyUpdate(){if(newSW)newSW.postMessage('skipWaiting');else location.reload()}
+let lastSeen=today();
+document.addEventListener('visibilitychange',()=>{if(document.hidden)return;const t=today();if(t!==lastSeen){if(sel===lastSeen)sel=t;lastSeen=t;render()}});
+</script>
+</body></html>

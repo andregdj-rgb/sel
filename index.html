@@ -32,6 +32,13 @@ button{font:inherit;font-family:var(--sans);cursor:pointer}
 .ib:disabled{opacity:.25}
 .tdy{font-size:11px;letter-spacing:.08em;padding:0 10px;width:auto}
 main{max-width:600px;margin:0 auto;padding:4px 14px calc(var(--nav) + env(safe-area-inset-bottom,0px) + 28px);touch-action:pan-y}
+.stabs{display:flex;gap:6px;overflow-x:auto;margin:10px -14px 0;padding:2px 14px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.stabs::-webkit-scrollbar{display:none}
+.st{flex:none;display:flex;align-items:center;gap:7px;border:1px solid #ffffff16;background:#ffffff06;color:var(--mu);border-radius:20px;padding:8px 14px;font-size:13px;letter-spacing:.02em;white-space:nowrap;transition:background .2s,color .2s,border-color .2s}
+.st i{width:8px;height:8px;border-radius:50%;border:1.5px solid var(--c);flex:none}
+.st i.f{background:var(--c);box-shadow:0 0 6px var(--c)}
+.st.on{color:var(--tx);border-color:color-mix(in srgb,var(--c) 70%,transparent);background:color-mix(in srgb,var(--c) 16%,transparent)}
+.view.sec{animation:vin .18s ease-out}
 .view{animation:vin .22s ease-out}@keyframes vin{from{opacity:0;transform:translateY(6px)}}
 .sL{animation:sL .22s ease-out}@keyframes sL{from{opacity:.2;transform:translateX(28px)}}
 .sR{animation:sR .22s ease-out}@keyframes sR{from{opacity:.2;transform:translateX(-28px)}}
@@ -151,6 +158,7 @@ textarea{min-height:110px;resize:vertical}
 <header class="top"><div class="tin">
  <div class="r1"><div class="brand">Sel.Phys/Sel.Meta</div></div>
  <div class="dnav" id="dnav"><button class="ib" onclick="go(-1)" aria-label="Previous">‹</button><div class="dt" id="dl"></div><button class="ib tdy" id="tb" onclick="goToday()">Today</button><button class="ib" id="nx" onclick="go(1)" aria-label="Next">›</button></div>
+ <div class="stabs" id="stabs"></div>
 </div></header>
 <main id="main"></main>
 <nav class="tabs"><div class="tabsin" id="tabs"></div></nav>
@@ -275,8 +283,9 @@ const pastNote=()=>{if(sel!==today())toast('Logged for '+long(sel))};
 function ring(p,size,gid,g1,g2,label){const o=263.9*(1-p);return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" style="flex:none;filter:drop-shadow(0 0 12px #f5d26b2e)"><defs><linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${g1}"/><stop offset="1" stop-color="${g2}"/></linearGradient></defs><circle cx="50" cy="50" r="42" fill="none" stroke="#1d2338" stroke-width="7"/><circle cx="50" cy="50" r="42" fill="none" stroke="url(#${gid})" stroke-width="7" stroke-linecap="round" stroke-dasharray="263.9" stroke-dashoffset="${o}" transform="rotate(-90 50 50)" style="transition:stroke-dashoffset .6s"/>${label===false?'':`<text x="50" y="58" text-anchor="middle" fill="#e8eaf3" font-size="25" font-weight="500" font-family="Cormorant Garamond,Georgia,serif">${pc(p)}</text>`}</svg>`}
 function miniRing(p){const o=94.2*(1-p);return `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="#1d2338" stroke-width="4"/><circle cx="18" cy="18" r="15" fill="none" stroke="var(--cx)" stroke-width="4" stroke-linecap="round" stroke-dasharray="94.2" stroke-dashoffset="${o}" transform="rotate(-90 18 18)" opacity="${p?1:0}"/></svg>`}
 let popId=null;
-function gCard(g,pct,rowFn){const cl=ui.collapsed[g.id];
- return `<section class="card" style="--c:var(${g.color})"><div class="ch" onclick="togG('${g.id}')"><div style="flex:1;min-width:0"><div class="tag">${esc(g.name)}</div><div class="nm">${esc(g.sub)}</div></div><span class="p">${pc(pct)}</span><span class="chev ${cl?'':'open'}">⌄</span></div><div class="bar"><i style="width:${pct*100}%"></i></div>${cl?'':g.items.map(i=>rowFn(g,i)).join('')+`<button class="row add" onclick="openGroup('${g.id}')">＋ Add / edit group</button>`}</section>`}
+let single=false;
+function gCard(g,pct,rowFn){const cl=!single&&ui.collapsed[g.id];
+ return `<section class="card" style="--c:var(${g.color})"><div class="ch" ${single?'style="cursor:default"':`onclick="togG('${g.id}')"`}><div style="flex:1;min-width:0"><div class="tag">${esc(g.name)}</div><div class="nm">${esc(g.sub)}</div></div><span class="p">${pc(pct)}</span>${single?'':`<span class="chev ${cl?'':'open'}">⌄</span>`}</div><div class="bar"><i style="width:${pct*100}%"></i></div>${cl?'':g.items.map(i=>rowFn(g,i)).join('')+`<button class="row add" onclick="openGroup('${g.id}')">＋ Add / edit group</button>`}</section>`}
 function dRow(g,it){
  const v=val(sel,it.id),dn=isDone(it,v),st=streak(it,sel);
  const dots=[6,5,4,3,2,1,0].map(k=>`<i class="${isDone(it,val(addD(sel,-k),it.id))?'on':''}${k===0?' now':''}"></i>`).join('');
@@ -293,13 +302,18 @@ function oRow(g,it){const p=onceP(it);
 function vToday(){
  const items=dailyItems(),dn=items.filter(it=>isDone(it,val(sel,it.id))).length,dp=items.length?dn/items.length:0,run=runDays(sel);
  const ba=backupAge(),showB=hasData()&&(ba===null?Object.keys(ST.months).length&&daysLogged()>=7:ba>=14);
- return (showB?`<div class="banner"><span>${ba===null?'You haven\'t backed up yet.':'Last backup '+ba+' days ago.'} Your log lives only on this phone.</span><button class="bb" style="--c:var(--c2)" onclick="downloadBackup()">Back up</button></div>`:'')+`<section class="card hero" style="--c:var(--cx)">${ring(dp,104,'gd','#ffe9a8','#e8a94a')}<div><div class="tag">${sel===today()?'Today':'Selected day'}</div><div class="big">${dn} of ${items.length}</div><div class="hint">daily practices done</div><div class="hint" style="margin-top:6px">Week sessions ${pc(weekPct(sel))}${run>=2?` · ${run}-day run at 80%+`:''}</div></div></section>`
- +groups('daily').map(g=>gCard(g,dayPct(sel,g.items),dRow)).join('')+`<button class="addg" onclick="addGroup('daily')">＋ New daily group</button>`}
+ const banner=showB?`<div class="banner"><span>${ba===null?'You haven\'t backed up yet.':'Last backup '+ba+' days ago.'} Your log lives only on this phone.</span><button class="bb" style="--c:var(--c2)" onclick="downloadBackup()">Back up</button></div>`:'';
+ const hero=`<section class="card hero" style="--c:var(--cx)">${ring(dp,104,'gd','#ffe9a8','#e8a94a')}<div><div class="tag">${sel===today()?'Today':'Selected day'}</div><div class="big">${dn} of ${items.length}</div><div class="hint">daily practices done</div><div class="hint" style="margin-top:6px">Week sessions ${pc(weekPct(sel))}${run>=2?` · ${run}-day run at 80%+`:''}</div></div></section>`;
+ return {allLabel:'All · '+pc(dp),top:banner,allTop:hero,
+  secs:groups('daily').map(g=>{const p=dayPct(sel,g.items);return {id:g.id,label:g.name,c:g.color,full:p>=1&&g.items.length>0,html:()=>gCard(g,p,dRow)}}),
+  tail:`<button class="addg" onclick="addGroup('daily')">＋ New daily group</button>`}}
 function vWeek(){
  const w=wkStart(sel),t=today();
  const strip=[0,1,2,3,4,5,6].map(k=>{const d=addD(w,k);return `<button class="wd${d===sel?' sel':''}" ${d>t?'disabled':''} onclick="pick('${d}')"><small>${fd(d,{weekday:'narrow'})}</small>${fd(d,{day:'numeric'})}${miniRing(d>t?0:dayPct(d))}</button>`}).join('');
- return `<section class="card" style="--c:var(--c1)"><div class="ch" style="cursor:default"><div style="flex:1"><div class="tag">Week of ${short(w)}</div><div class="nm">Sessions logged</div></div><span class="p">${pc(weekPct(sel))}</span></div><div class="bar"><i style="width:${weekPct(sel)*100}%"></i></div><div class="wstrip">${strip}</div><div class="hint" style="margin-top:10px">Tap a line to log a session on the selected day; − removes one. Rings show daily practices.</div></section>`
- +groups('weekly').map(g=>gCard(g,g.items.length?avg(g.items.map(i=>wItemPct(i,sel))):0,wRow)).join('')+`<button class="addg" onclick="addGroup('weekly')">＋ New weekly group</button>`}
+ const strip_=`<section class="card" style="--c:var(--c1)"><div class="ch" style="cursor:default"><div style="flex:1"><div class="tag">Week of ${short(w)}</div><div class="nm">Sessions logged</div></div><span class="p">${pc(weekPct(sel))}</span></div><div class="bar"><i style="width:${weekPct(sel)*100}%"></i></div><div class="wstrip">${strip}</div><div class="hint" style="margin-top:10px">Tap a line to log a session on the selected day; − removes one. Rings show daily practices.</div></section>`;
+ return {allLabel:'All · '+pc(weekPct(sel)),top:strip_,
+  secs:groups('weekly').map(g=>{const p=g.items.length?avg(g.items.map(i=>wItemPct(i,sel))):0;return {id:g.id,label:g.name,c:g.color,full:p>=1,html:()=>gCard(g,p,wRow)}}),
+  tail:`<button class="addg" onclick="addGroup('weekly')">＋ New weekly group</button>`}}
 function spark(id){
  const pts=[];for(let k=27;k>=0;k--){const v=metric(addD(sel,-k),id);if(v!=null)pts.push([27-k,v])}
  if(pts.length<2)return '';
@@ -314,8 +328,9 @@ function vCheck(){
    :`<div class="numin"><button class="sb" onclick="stepM('${mt.id}',-1)">−</button><input type="number" inputmode="decimal" step="${mt.step||'any'}" value="${v===undefined?'':esc(v)}" placeholder="${esc(mt.unit||'')}" onchange="setM('${mt.id}',this.value===''?undefined:+this.value)"><button class="sb" onclick="stepM('${mt.id}',1)">+</button></div>`;
   return `<div class="mc"><div class="mh"><b>${esc(mt.label)}</b><small class="hint">${mt.type==='scale'?'1–5':esc(mt.unit||'')}</small><span>${l7.length?'7-day avg '+fmN(Math.round(avg(l7)*10)/10):''}</span></div>${inp}${spark(mt.id)}</div>`}).join('');
  const done=Object.keys(m).filter(k=>ST.cfg.metrics.some(mm=>mm.id===k)).length;
- return `<section class="card" style="--c:var(--c4)"><div class="ch" style="cursor:default"><div style="flex:1"><div class="tag">Check-in</div><div class="nm">How you are ${sel===today()?'today':'on this day'}</div></div><span class="p">${done}/${ST.cfg.metrics.length}</span></div><div class="bar"><i style="width:${ST.cfg.metrics.length?done/ST.cfg.metrics.length*100:0}%"></i></div>${rows}<button class="row add" onclick="openMetrics()">＋ Add / edit check-in fields</button></section>
- <section class="card" style="--c:var(--c1)"><div class="tag">Notes</div><div class="nm" style="margin-bottom:10px">Observations</div><textarea placeholder="What helped, what got in the way, how voice / posture / eyes felt…" onchange="setNote(this.value)">${esc(x.n||'')}</textarea></section>`}
+ const ci=`<section class="card" style="--c:var(--c4)"><div class="ch" style="cursor:default"><div style="flex:1"><div class="tag">Check-in</div><div class="nm">How you are ${sel===today()?'today':'on this day'}</div></div><span class="p">${done}/${ST.cfg.metrics.length}</span></div><div class="bar"><i style="width:${ST.cfg.metrics.length?done/ST.cfg.metrics.length*100:0}%"></i></div>${rows}<button class="row add" onclick="openMetrics()">＋ Add / edit check-in fields</button></section>`;
+ const notes=`<section class="card" style="--c:var(--c1)"><div class="tag">Notes</div><div class="nm" style="margin-bottom:10px">Observations</div><textarea placeholder="What helped, what got in the way, how voice / posture / eyes felt…" onchange="setNote(this.value)">${esc(x.n||'')}</textarea></section>`;
+ return {secs:[{id:'ci',label:'Check-in',c:'--c4',full:done===ST.cfg.metrics.length&&done>0,html:()=>ci},{id:'notes',label:'Notes',c:'--c1',full:!!x.n,html:()=>notes}]}}
 
 /* ---------- charts ---------- */
 const CH={};let chN=0;
@@ -356,7 +371,7 @@ function bestRun(it,days){let b=0,c=0;days.forEach(d=>{if(isDone(it,val(d,it.id)
 function vHistory(){
  const start=firstDay(),n=ui.range,t=today();
  const seg=`<div class="seg">${[[30,'30 days'],[90,'90 days'],[365,'Year']].map(([v,l])=>`<button class="${n===v?'on':''}" onclick="ui.range=${v};saveUI();render()">${l}</button>`).join('')}</div>`;
- if(!start)return `<section class="card" style="--c:var(--cx)">${seg}<div class="empty">Nothing logged yet. Once you start ticking practices and filling in check-ins, your charts, streaks and patterns appear here.</div></section>`;
+ if(!start)return {top:`<div style="margin-top:12px">${seg}</div><section class="card" style="--c:var(--cx)"><div class="empty">Nothing logged yet. Once you start ticking practices and filling in check-ins, your charts, streaks and patterns appear here.</div></section>`,secs:[]};
  const days=[];for(let k=n-1;k>=0;k--)days.push(addD(t,-k));
  const tracked=days.filter(d=>d>=start);
  const comp=days.map(d=>d<start?null:dayPct(d)),cAvg=roll(comp).map((v,i)=>comp[i]==null?null:v);
@@ -394,25 +409,27 @@ function vHistory(){
    return `<div class="cmp"><div class="t1">${esc(r.it.label)}<span>${f(r.a)} vs ${f(r.b)}${u} · ${r.d>=0?'+':'−'}${f(Math.abs(r.d))}</span></div><div class="dv"><i style="${r.d>=0?`left:50%;width:${w}%;background:var(--c0)`:`right:50%;width:${w}%;background:var(--c3)`}"></i></div></div>`}).join('')
    :`<div class="empty">Not enough data yet. Each practice needs at least 4 days done and 4 not done, with ${esc(mt.label.toLowerCase())} logged.</div>`;
   cSec=`<section class="card" style="--c:var(--c0)"><div class="tag">Patterns</div><div class="nm">What seems to help</div><div class="hint" style="margin:4px 0 10px">Average ${esc(mt.label.toLowerCase())} on days you did each practice vs days you didn't. Teal is higher, pink lower. These are associations, not proof.</div><div class="chips">${ms.map(m=>`<button class="${m.id===ui.cmp?'on':''}" onclick="ui.cmp='${m.id}';saveUI();render()">${esc(m.label)}</button>`).join('')}</div><div class="seg" style="margin-bottom:6px"><button class="${!ui.lag?'on':''}" onclick="ui.lag=0;saveUI();render()">Same day</button><button class="${ui.lag?'on':''}" onclick="ui.lag=1;saveUI();render()">Next day</button></div>${list}</section>`}
- return `<div style="margin-top:12px">${seg}</div>
- <section class="card" style="--c:var(--cx)"><div class="tag">Overview</div><div class="nm" style="margin-bottom:12px">Last ${n===365?'year':n+' days'}</div>${tiles}</section>
- <section class="card" style="--c:var(--cx)"><div class="tag">Daily completion</div><div class="nm">Bars by day · line is the 7-day average</div>${c1}</section>
- <section class="card" style="--c:var(--cx)"><div class="tag">Consistency</div><div class="nm" style="margin-bottom:10px">Calendar</div>${hm}</section>
- ${mSec}
- <section class="card" style="--c:var(--c1)"><div class="tag">Practices</div><div class="nm" style="margin-bottom:6px">Daily</div><div class="pr h"><div>Practice · tap for detail</div><div class="num">Done</div><div class="num">Now / best</div></div>${pRows}
- <div class="nm" style="margin:20px 0 6px">Weekly</div><div class="pr h"><div>Practice</div><div class="num">Avg/wk</div><div class="num"></div></div>${wRows}</section>
- ${cSec}
- <button class="addg" onclick="downloadCSV()">Download all data as CSV</button>`}
+ const H=(c,tag,nm,body)=>`<section class="card" style="--c:var(${c})"><div class="tag">${tag}</div><div class="nm" style="margin-bottom:10px">${nm}</div>${body}</section>`;
+ const secs=[
+  {id:'ov',label:'Overview',c:'--cx',html:()=>H('--cx','Overview','Last '+(n===365?'year':n+' days'),tiles)},
+  {id:'comp',label:'Completion',c:'--cx',html:()=>H('--cx','Daily completion','Bars by day · line is the 7-day average',c1)},
+  {id:'cal',label:'Calendar',c:'--cx',html:()=>H('--cx','Consistency','Calendar',hm)}];
+ if(mSec)secs.push({id:'trend',label:'Trends',c:'--c4',html:()=>mSec});
+ secs.push({id:'prac',label:'Practices',c:'--c1',html:()=>`<section class="card" style="--c:var(--c1)"><div class="tag">Practices</div><div class="nm" style="margin-bottom:6px">Daily</div><div class="pr h"><div>Practice · tap for detail</div><div class="num">Done</div><div class="num">Now / best</div></div>${pRows}
+ <div class="nm" style="margin:20px 0 6px">Weekly</div><div class="pr h"><div>Practice</div><div class="num">Avg/wk</div><div class="num"></div></div>${wRows}</section>`});
+ if(cSec)secs.push({id:'pat',label:'Patterns',c:'--c0',html:()=>cSec});
+ return {top:`<div style="margin-top:12px">${seg}</div>`,secs,tail:`<button class="addg" onclick="downloadCSV()">Download all data as CSV</button>`}}
 function vMore(){
  const once=groups('once');
- return groups('once').map(g=>gCard(g,g.items.length?avg(g.items.map(onceP)):0,oRow)).join('')+`<button class="addg" onclick="addGroup('once')">＋ New group of one-offs</button>
- <section class="card" style="--c:var(--mu)"><div class="tag">Settings & data</div>
+ const set=`<section class="card" style="--c:var(--mu)"><div class="tag">Settings & data</div>
  <button class="set" onclick="openMetrics()"><span>Check-in fields</span><em>${ST.cfg.metrics.length} ›</em></button>
  <button class="set" onclick="downloadBackup()"><span>Download backup file</span><em>${backupAge()===null?'never':backupAge()===0?'today':backupAge()+'d ago'} ›</em></button>
  <button class="set" onclick="$('fileIn').click()"><span>Restore from backup file</span><em>›</em></button>
  <button class="set" onclick="downloadCSV()"><span>Download data as CSV</span><em>›</em></button>
  <button class="set" onclick="openData()"><span>Paste / copy backup text</span><em>›</em></button>
- <div class="hint" style="padding:10px 4px">Your log is stored only on this phone${persisted?', protected from automatic clearing':''}. Download a backup now and then (to Drive or email it to yourself) so you can restore it on a new phone.</div></section>`}
+ <div class="hint" style="padding:10px 4px">Your log is stored only on this phone${persisted?', protected from automatic clearing':''}. Download a backup now and then (to Drive or email it to yourself) so you can restore it on a new phone.</div></section>`;
+ return {secs:[...once.map(g=>{const p=g.items.length?avg(g.items.map(onceP)):0;return {id:g.id,label:g.name,c:g.color,full:p>=1&&g.items.length>0,html:()=>gCard(g,p,oRow)}}),{id:'settings',label:'Settings',c:'--mu',html:()=>set}],
+  tail:`<button class="addg" onclick="addGroup('once')">＋ New group of one-offs</button>`}}
 
 const TABS=[['today','Today','<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'],
  ['week','Week','<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>'],
@@ -429,12 +446,22 @@ function render(anim){
  $('tb').style.display=sel===today()?'none':'';$('nx').disabled=sel>=today();
  $('tabs').innerHTML=TABS.map(([k,l,ic])=>`<button class="tab${ui.view===k?' on':''}" onclick="setView('${k}')"><span class="pb"><svg viewBox="0 0 24 24">${ic}</svg></span>${l}</button>`).join('');
  for(const k in CH)delete CH[k];
- $('main').innerHTML=`<div class="view ${anim||''}">${VIEWS[ui.view]()}</div>`;
+ const V=VIEWS[ui.view]();ui.sec=ui.sec||{};let cur=ui.sec[ui.view]||'all';if(cur!=='all'&&!V.secs.some(x=>x.id===cur))cur='all';
+ const st=$('stabs');
+ if(V.secs.length>1){st.style.display='';
+  st.innerHTML=[{id:'all',label:V.allLabel||'All'},...V.secs].map(x=>`<button class="st${x.id===cur?' on':''}" data-s="${x.id}" style="--c:var(${x.c||'--tx'})" onclick="setSec('${x.id}')">${x.c?`<i class="${x.full?'f':''}"></i>`:''}${esc(x.label)}</button>`).join('')}
+ else{st.style.display='none';cur='all'}
+ single=cur!=='all';
+ const body=single?V.secs.find(x=>x.id===cur).html():(V.allTop||'')+V.secs.map(x=>x.html()).join('')+(V.tail||'');
+ single=false;
+ $('main').innerHTML=`<div class="view ${anim||''}">${V.top||''}${body}</div>`;
+ const on=st.querySelector('.st.on');if(on&&st.style.display!=='none'){const tgt=on.offsetLeft-st.clientWidth/2+on.clientWidth/2;st.scrollTo({left:Math.max(0,tgt),behavior:anim==='sec'?'smooth':'auto'})}
  popId=null;
  if(ui.view==='history'){const h=document.querySelector('.heatw');if(h)h.scrollLeft=h.scrollWidth}
 }
 
 /* ---------- actions ---------- */
+function setSec(id){ui.sec=ui.sec||{};if(ui.sec[ui.view]===id&&id!=='all'){scrollTo({top:0,behavior:'smooth'});return}ui.sec[ui.view]=id;saveUI();render('sec');scrollTo(0,0)}
 function setView(v){if(v===ui.view){scrollTo({top:0,behavior:'smooth'});return}ui.view=v;saveUI();render();scrollTo(0,0)}
 function go(n){if(ui.view==='week')n*=7;let s=addD(sel,n);if(s>today())s=today();if(s===sel)return;sel=s;render(n>0?'sL':'sR')}
 function goToday(){sel=today();render()}
@@ -448,7 +475,7 @@ function setM(id,v,toggle){const x=day(sel);x.m=x.m||{};if(toggle&&x.m[id]===v)v
 function stepM(id,d){const mt=ST.cfg.metrics.find(m=>m.id===id),st=+mt.step||1;let v=metric(sel,id);if(v==null)v=lastMetric(id);if(v==null)v=0;else if(metric(sel,id)!=null)v=v+d*st;v=Math.round(v*1000)/1000;setM(id,v);render()}
 function setNote(t){const x=day(sel);if(t.trim())x.n=t;else delete x.n;touch('log-'+sel.slice(0,7))}
 let sx0=null;
-$('main').addEventListener('touchstart',e=>{const t=e.target;if(!['today','week','check'].includes(ui.view)||t.closest('.chart,.heatw,input,textarea,.seg,.chips,.wstrip')){sx0=null;return}sx0=[e.touches[0].clientX,e.touches[0].clientY]},{passive:true});
+$('main').addEventListener('touchstart',e=>{const t=e.target;if(!['today','week','check'].includes(ui.view)||t.closest('.chart,.heatw,input,textarea,.seg,.chips,.wstrip,.stabs')){sx0=null;return}sx0=[e.touches[0].clientX,e.touches[0].clientY]},{passive:true});
 $('main').addEventListener('touchend',e=>{if(!sx0)return;const t=e.changedTouches[0],dx=t.clientX-sx0[0],dy=t.clientY-sx0[1];sx0=null;if(Math.abs(dx)>70&&Math.abs(dx)>2*Math.abs(dy))go(dx<0?1:-1)},{passive:true});
 let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{if(ui.view==='history')render()},250)});
 

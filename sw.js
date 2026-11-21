@@ -1,12 +1,13 @@
 // Bump VERSION whenever any file changes, so phones pick up the update.
-const VERSION = 'sel-v1';
+const VERSION = 'sel-v2';
 const FILES = ['./', './index.html', './manifest.webmanifest',
   './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png',
   './icons/icon-maskable-192.png', './icons/icon-maskable-512.png',
   './icons/icon-mono-512.png', './icons/apple-touch-icon.png', './icons/favicon-32.png'];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(VERSION).then(c => c.addAll(FILES)));
+  // cache:'reload' skips GitHub's 10-minute HTTP cache so each update gets the newest files.
+  e.waitUntil(caches.open(VERSION).then(c => c.addAll(FILES.map(f => new Request(f, {cache: 'reload'})))));
 });
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys()
